@@ -1,0 +1,20 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  color: var(--color-text-secondary);
+  touch-action: manipulation;
+}
+
+.button:hover {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text);
+}
+
+.button:active {
+  transform: scale(0.92);
+}

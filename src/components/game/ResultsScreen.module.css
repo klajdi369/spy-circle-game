@@ -1,0 +1,134 @@
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-md);
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-xl));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+
+.headerIcon {
+  color: var(--color-accent);
+  margin-bottom: var(--space-md);
+}
+
+.headerTitle {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
+}
+
+.headerSub {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.wordCard {
+  width: 100%;
+  background: var(--color-bg-card);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  text-align: center;
+  margin-bottom: var(--space-lg);
+  box-shadow: 0 0 40px rgba(245, 158, 11, 0.15);
+}
+
+.wordLabel {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  margin-bottom: var(--space-sm);
+}
+
+.wordValue {
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  color: var(--color-text);
+  word-break: break-word;
+  margin-bottom: var(--space-sm);
+}
+
+.wordCategory {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  background: var(--color-bg-tertiary);
+  display: inline-block;
+  padding: 4px 16px;
+  border-radius: var(--radius-full);
+}
+
+.spySection {
+  width: 100%;
+  margin-bottom: var(--space-lg);
+}
+
+.spyTitle {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-danger);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-md);
+  text-align: center;
+}
+
+.spyList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+}
+
+.spyChip {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--color-danger);
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: var(--text-base);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.stats {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.statCard {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.statValue {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.statLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
