@@ -40,9 +40,9 @@ export function HowToPlayScreen() {
             <div>
               <div className={styles.stepTitle}>Reveal your role</div>
               <div className={styles.stepDesc}>
-                Press and hold the role card to reveal your role. Regular
-                players see the secret word. Spies see a message telling them
-                to blend in.
+                Tap the role card to reveal your role. Regular players see the
+                secret word. Spies see a message telling them to blend in. Tap
+                the card again to hide it and pass the phone.
               </div>
             </div>
           </div>

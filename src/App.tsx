@@ -8,12 +8,7 @@ import { SettingsScreen } from './screens/SettingsScreen';
 import { GameProvider, useGame } from './hooks/useGame';
 import { useSettings, useThemeEffect } from './hooks/useSettings';
 import { HandoffScreen } from './components/game/HandoffScreen';
-import {
-  RoleCardConcealed,
-  RoleCardRevealed,
-  TransitionScreen,
-  ReadyScreen,
-} from './components/game/RoleCard';
+import { RoleCardConcealed, RoleCardRevealed, ReadyScreen } from './components/game/RoleCard';
 import { DiscussionTimer } from './components/game/DiscussionTimer';
 import { ResultsScreen } from './components/game/ResultsScreen';
 import styles from './App.module.css';
@@ -30,8 +25,6 @@ function GameFlow() {
       return <RoleCardConcealed />;
     case 'revealed':
       return <RoleCardRevealed />;
-    case 'transition':
-      return <TransitionScreen />;
     case 'ready':
       return <ReadyScreen />;
     case 'discussion':

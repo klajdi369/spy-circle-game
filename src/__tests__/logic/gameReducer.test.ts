@@ -58,25 +58,27 @@ describe('gameReducer state machine', () => {
 
   it('walks through the full handoff flow', () => {
     let state = startedState();
-    // handoff -> concealed -> revealed -> transition -> handoff (next player)
+    // handoff -> concealed -> revealed -> handoff (next player) on hide
     state = dispatch(state, { type: 'SHOW_HANDOFF' });
     expect(state.phase).toBe('concealed');
     state = dispatch(state, { type: 'REVEAL_ROLE' });
     expect(state.phase).toBe('revealed');
     state = dispatch(state, { type: 'HIDE_ROLE' });
-    expect(state.phase).toBe('transition');
-    state = dispatch(state, { type: 'NEXT_PLAYER' });
     expect(state.phase).toBe('handoff');
     expect(state.currentPlayerIndex).toBe(1);
   });
 
-  it('moves to ready after the last player', () => {
+  it('hiding the last player\'s role moves straight to ready', () => {
     let state = startedState({ currentPlayerIndex: 3 });
     state = dispatch(state, { type: 'SHOW_HANDOFF' });
     state = dispatch(state, { type: 'REVEAL_ROLE' });
     state = dispatch(state, { type: 'HIDE_ROLE' });
-    state = dispatch(state, { type: 'NEXT_PLAYER' });
     expect(state.phase).toBe('ready');
+  });
+
+  it('rejects HIDE_ROLE from phases other than revealed', () => {
+    const state = startedState({ phase: 'handoff' });
+    expect(dispatch(state, { type: 'HIDE_ROLE' }).phase).toBe('handoff');
   });
 
   it('ends discussion and reveals results in order', () => {

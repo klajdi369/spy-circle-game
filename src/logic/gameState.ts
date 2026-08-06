@@ -53,22 +53,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'HIDE_ROLE': {
-      if (!isValidTransition(state.phase, 'transition')) return state;
-      return { ...state, phase: 'transition' };
-    }
-
-    case 'NEXT_PLAYER': {
-      if (!isValidTransition(state.phase, 'handoff')) return state;
+      // Hiding a role goes straight to the next player (or to "ready" after the last one).
+      if (!isValidTransition(state.phase, 'handoff') && !isValidTransition(state.phase, 'ready')) return state;
       const nextIndex = state.currentPlayerIndex + 1;
       if (nextIndex >= state.players.length) {
         return { ...state, phase: 'ready' };
       }
       return { ...state, phase: 'handoff', currentPlayerIndex: nextIndex };
-    }
-
-    case 'ALL_PLAYERS_DONE': {
-      if (!isValidTransition(state.phase, 'ready')) return state;
-      return { ...state, phase: 'ready' };
     }
 
     case 'START_DISCUSSION': {

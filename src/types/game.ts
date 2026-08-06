@@ -3,7 +3,6 @@ export type GamePhase =
   | 'handoff'
   | 'concealed'
   | 'revealed'
-  | 'transition'
   | 'ready'
   | 'discussion'
   | 'finished'
@@ -41,8 +40,6 @@ export type GameAction =
   | { type: 'SHOW_HANDOFF' }
   | { type: 'REVEAL_ROLE' }
   | { type: 'HIDE_ROLE' }
-  | { type: 'NEXT_PLAYER' }
-  | { type: 'ALL_PLAYERS_DONE' }
   | { type: 'START_DISCUSSION' }
   | { type: 'END_DISCUSSION' }
   | { type: 'SHOW_RESULTS' }
@@ -54,8 +51,7 @@ export const VALID_TRANSITIONS: Record<GamePhase, GamePhase[]> = {
   setup: ['handoff'],
   handoff: ['concealed'],
   concealed: ['revealed'],
-  revealed: ['transition'],
-  transition: ['handoff', 'ready'],
+  revealed: ['handoff', 'ready'],
   ready: ['discussion'],
   discussion: ['finished'],
   finished: ['results'],

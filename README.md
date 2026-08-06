@@ -63,7 +63,7 @@ npm run test:watch
 
 1. **Configure the game** — choose players, spies, timer, and category
 2. **Pass the device** — each player takes a turn privately
-3. **Reveal your role** — press and hold the card to see your identity
+3. **Reveal your role** — tap the card to see your identity, then tap again to hide it and pass the phone
 4. **Discuss** — ask questions without saying the word directly
 5. **Identify the spy** — the group votes on who they suspect
 6. **Spy's last chance** — if caught, the spy may guess the word
