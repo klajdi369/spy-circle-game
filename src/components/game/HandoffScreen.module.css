@@ -34,7 +34,7 @@
 
 .warning {
   font-size: var(--text-sm);
-  color: var(--color-warning);
+  color: var(--color-danger);
   font-weight: 600;
   margin-bottom: var(--space-xl);
   display: flex;

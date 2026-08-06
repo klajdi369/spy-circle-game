@@ -1,10 +1,10 @@
 :root {
   /* Base colors - dark navy */
-  --color-bg: #0a0f1e;
-  --color-bg-secondary: #111827;
-  --color-bg-tertiary: #1e293b;
-  --color-bg-card: #141e33;
-  --color-bg-elevated: #1a2744;
+  --color-bg: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+  --color-bg-card: #1a2744;
+  --color-bg-elevated: #243450;
 
   /* Text */
   --color-text: #f1f5f9;
@@ -15,7 +15,7 @@
   --color-accent: #f59e0b;
   --color-accent-hover: #d97706;
   --color-accent-text: #0f172a;
-  --color-accent-muted: rgba(245, 158, 11, 0.12);
+  --color-accent-muted: rgba(245, 158, 11, 0.15);
 
   /* Semantic */
   --color-danger: #ef4444;
@@ -25,8 +25,8 @@
   --color-info: #3b82f6;
 
   /* Borders */
-  --color-border: #1e293b;
-  --color-border-light: rgba(255, 255, 255, 0.06);
+  --color-border: #334155;
+  --color-border-light: rgba(255, 255, 255, 0.08);
 
   /* Spacing */
   --space-xs: 4px;

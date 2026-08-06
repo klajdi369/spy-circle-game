@@ -21,15 +21,15 @@
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
 }
 
 .iosSteps li svg {
   flex-shrink: 0;
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .iosSteps strong {

@@ -8,6 +8,8 @@
   align-items: center;
 }
 
+/* ── Header ────────────────────────────────────────────────── */
+
 .header {
   text-align: center;
   margin-bottom: var(--space-lg);
@@ -64,16 +66,17 @@
 .wordCard {
   width: 100%;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 65%),
     var(--color-bg-card);
-  border: 2px solid var(--color-border-light);
+  border: 2px solid var(--color-accent);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
   text-align: center;
   margin-bottom: var(--space-md);
   box-shadow:
+    0 0 32px rgba(245, 158, 11, 0.18),
     0 4px 24px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 @media (min-width: 500px) {
@@ -134,13 +137,13 @@
 }
 
 .spyChip {
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-secondary);
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
   padding: 6px 16px;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: var(--text-sm);
-  border: 1px solid var(--color-border-light);
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 /* ── Stats grid ───────────────────────────────────────────── */
