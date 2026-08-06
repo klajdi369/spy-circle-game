@@ -53,17 +53,9 @@ export function validateCategoryName(name: string): { valid: boolean; cleaned: s
 /**
  * Check if a category name is a duplicate (case-insensitive).
  */
-export function isCategoryNameDuplicate(
-  name: string,
-  existingNames: string[],
-  excludeName?: string,
-): boolean {
+export function isCategoryNameDuplicate(name: string, existingNames: string[]): boolean {
   const lower = name.trim().toLowerCase();
-  return existingNames.some(
-    (existing) =>
-      existing.toLowerCase() === lower &&
-      (!excludeName || existing.toLowerCase() !== excludeName.toLowerCase()),
-  );
+  return existingNames.some((existing) => existing.toLowerCase() === lower);
 }
 
 /**

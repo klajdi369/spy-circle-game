@@ -1,18 +1,10 @@
 import type { HTMLAttributes } from 'react';
 import styles from './Card.module.css';
 
-interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  interactive?: boolean;
-}
+interface CardProps extends HTMLAttributes<HTMLDivElement> {}
 
-export function Card({ interactive = false, className = '', children, ...props }: CardProps) {
-  const classes = [
-    styles.card,
-    interactive ? styles.interactive : '',
-    className,
-  ]
-    .filter(Boolean)
-    .join(' ');
+export function Card({ className = '', children, ...props }: CardProps) {
+  const classes = [styles.card, className].filter(Boolean).join(' ');
 
   return (
     <div className={classes} {...props}>

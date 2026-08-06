@@ -5,7 +5,8 @@ import { PlayScreen } from './screens/PlayScreen';
 import { WordLibraryScreen } from './screens/WordLibraryScreen';
 import { HowToPlayScreen } from './screens/HowToPlayScreen';
 import { SettingsScreen } from './screens/SettingsScreen';
-import { GameProvider, useGame } from './hooks/useGame';
+import { GameProvider } from './hooks/gameProvider';
+import { useGame } from './hooks/useGame';
 import { useSettings, useThemeEffect } from './hooks/useSettings';
 import { HandoffScreen } from './components/game/HandoffScreen';
 import { RoleCardConcealed, RoleCardRevealed, ReadyScreen } from './components/game/RoleCard';
@@ -35,8 +36,6 @@ function GameFlow() {
       return <DiscussionTimer />;
     case 'results':
       return <ResultsScreen />;
-    default:
-      return <PlayScreen />;
   }
 }
 

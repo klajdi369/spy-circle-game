@@ -11,15 +11,3 @@
     padding: var(--space-lg);
   }
 }
-
-.interactive {
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-.interactive:hover {
-  background: var(--color-bg-elevated);
-  box-shadow: var(--shadow-md);
-}
-.interactive:active {
-  transform: scale(0.98);
-}

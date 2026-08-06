@@ -8,7 +8,7 @@ import {
   restoreCategoryDefaults,
   restoreAllDefaults,
 } from '../storage/wordLibrary';
-import { removeDuplicateWords, validateCategoryName, isCategoryNameDuplicate } from '../logic/validation';
+import { removeDuplicateWords, validateCategoryName, validateWord, isCategoryNameDuplicate } from '../logic/validation';
 import { generateUUID } from '../logic/random';
 
 export function useWordLibrary() {
@@ -17,10 +17,6 @@ export function useWordLibrary() {
   const persist = useCallback((lib: WordLibrary) => {
     saveWordLibrary(lib);
     setLibrary(lib);
-  }, []);
-
-  const reload = useCallback(() => {
-    setLibrary(loadWordLibrary());
   }, []);
 
   const addCategory = useCallback((name: string): { success: boolean; error?: string } => {
@@ -82,13 +78,13 @@ export function useWordLibrary() {
   }, [library, persist]);
 
   const addWord = useCallback((categoryId: string, word: string): { success: boolean; error?: string } => {
-    const trimmed = word.trim();
-    if (trimmed === '') return { success: false, error: 'Word cannot be blank.' };
+    const { valid, cleaned, error } = validateWord(word);
+    if (!valid) return { success: false, error };
 
     const category = library.categories.find((c) => c.id === categoryId);
     if (!category) return { success: false, error: 'Category not found.' };
 
-    const lower = trimmed.toLowerCase();
+    const lower = cleaned.toLowerCase();
     if (category.words.some((w) => w.toLowerCase() === lower)) {
       return { success: false, error: 'This word already exists in this category.' };
     }
@@ -96,7 +92,7 @@ export function useWordLibrary() {
     persist({
       ...library,
       categories: library.categories.map((c) =>
-        c.id === categoryId ? { ...c, words: [...c.words, trimmed] } : c,
+        c.id === categoryId ? { ...c, words: [...c.words, cleaned] } : c,
       ),
     });
     return { success: true };
@@ -133,13 +129,13 @@ export function useWordLibrary() {
   }, [library, persist]);
 
   const editWord = useCallback((categoryId: string, oldIndex: number, newWord: string) => {
-    const trimmed = newWord.trim();
-    if (trimmed === '') return { success: false, error: 'Word cannot be blank.' };
+    const { valid, cleaned, error } = validateWord(newWord);
+    if (!valid) return { success: false, error };
 
     const category = library.categories.find((c) => c.id === categoryId);
     if (!category) return { success: false, error: 'Category not found.' };
 
-    const lower = trimmed.toLowerCase();
+    const lower = cleaned.toLowerCase();
     const duplicate = category.words.findIndex(
       (w, i) => i !== oldIndex && w.toLowerCase() === lower,
     );
@@ -148,7 +144,7 @@ export function useWordLibrary() {
     }
 
     const newWords = [...category.words];
-    newWords[oldIndex] = trimmed;
+    newWords[oldIndex] = cleaned;
 
     persist({
       ...library,
@@ -232,6 +228,5 @@ export function useWordLibrary() {
     restoreAll,
     exportLib,
     importLib,
-    reload,
   };
 }

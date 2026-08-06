@@ -13,6 +13,8 @@ import { pickRandom, pickRandomIndices } from '../logic/random';
 import type { GameConfig, Player } from '../types/game';
 import styles from './PlayScreen.module.css';
 
+const ALL_CATEGORIES_ID = '__all__';
+
 const TIMER_OPTIONS = [
   { label: '1 min', value: 60 },
   { label: '2 min', value: 120 },
@@ -34,7 +36,7 @@ export function PlayScreen() {
   const [timerDuration, setTimerDuration] = useState<number | null>(
     settings.lastTimerDuration ?? state.config.timerDuration,
   );
-  const [categoryId, setCategoryId] = useState<string>('__all__');
+  const [categoryId, setCategoryId] = useState<string>(ALL_CATEGORIES_ID);
   const [usePlayerNames, setUsePlayerNames] = useState(state.config.usePlayerNames);
   const [playerNames, setPlayerNames] = useState<string[]>(() =>
     state.config.playerNames.length > 0
@@ -54,7 +56,7 @@ export function PlayScreen() {
   );
 
   const canStart = useMemo(() => {
-    if (categoryId === '__all__') {
+    if (categoryId === ALL_CATEGORIES_ID) {
       return hasUsableWords(enabledCategories);
     }
     const cat = library.categories.find((c) => c.id === categoryId);
@@ -89,7 +91,7 @@ export function PlayScreen() {
 
     // Select category
     let selectedCategory = enabledCategories.find((c) => c.id === categoryId);
-    if (categoryId === '__all__') {
+    if (categoryId === ALL_CATEGORIES_ID) {
       if (enabledCategories.length === 0) {
         setError('No categories with words available. Enable at least one category with words in the Word Library.');
         return;
@@ -219,7 +221,7 @@ export function PlayScreen() {
             onChange={(e) => setCategoryId(e.target.value)}
             aria-label="Word category"
           >
-            <option value="__all__">All Categories</option>
+            <option value={ALL_CATEGORIES_ID}>All Categories</option>
             {enabledCategories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name} ({cat.words.length})

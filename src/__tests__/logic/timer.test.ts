@@ -3,7 +3,6 @@ import {
   createTimerState,
   computeTimerDisplay,
   formatTime,
-  formatElapsed,
   pauseTimer,
   resumeTimer,
   addTime as addTimeFn,
@@ -17,12 +16,6 @@ describe('formatTime', () => {
     expect(formatTime(65000)).toBe('1:05');
     expect(formatTime(300000)).toBe('5:00');
     expect(formatTime(3599000)).toBe('59:59');
-  });
-});
-
-describe('formatElapsed', () => {
-  it('formats elapsed time', () => {
-    expect(formatElapsed(30000)).toBe('0:30');
   });
 });
 

@@ -28,17 +28,9 @@ export function ResultsScreen() {
 
   const handlePlayAgain = useCallback(() => {
     const enabledCategories = library.categories.filter((c) => c.enabled && c.words.length > 0);
-    let selectedCategory = enabledCategories.find((c) => c.id === state.config.categoryId);
-    if (!selectedCategory) {
-      const allCat = library.categories.find((c) => c.id === state.config.categoryId);
-      if (allCat && !allCat.enabled) {
-        // Category was disabled, pick from any enabled
-        selectedCategory = enabledCategories[0];
-      }
-    }
-    if (!selectedCategory) {
-      selectedCategory = enabledCategories[0];
-    }
+    // Prefer the same category; if it was disabled or removed, fall back to any enabled one.
+    const selectedCategory =
+      enabledCategories.find((c) => c.id === state.config.categoryId) ?? enabledCategories[0];
     if (!selectedCategory) return;
 
     const secretWord = pickRandom(selectedCategory.words);

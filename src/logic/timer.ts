@@ -40,10 +40,6 @@ export function formatTime(ms: number): string {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
-export function formatElapsed(ms: number): string {
-  return formatTime(ms);
-}
-
 export function pauseTimer(state: TimerState): TimerState {
   if (state.isPaused) return state;
   const now = Date.now();

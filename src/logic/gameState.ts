@@ -1,4 +1,4 @@
-import type { GameState, GameAction, GamePhase } from '../types/game';
+import type { GameState, GameAction, GamePhase, GameConfig, Player } from '../types/game';
 import { VALID_TRANSITIONS } from '../types/game';
 
 export const initialState: GameState = {
@@ -24,22 +24,39 @@ function isValidTransition(from: GamePhase, to: GamePhase): boolean {
   return VALID_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
+interface RoundPayload {
+  config: GameConfig;
+  secretWord: string;
+  category: string;
+  players: Player[];
+}
+
+/** Begin a fresh round: same shape for START_GAME and PLAY_AGAIN. */
+function startRound(state: GameState, round: RoundPayload): GameState {
+  return {
+    ...state,
+    phase: 'handoff',
+    config: round.config,
+    players: round.players,
+    secretWord: round.secretWord,
+    category: round.category,
+    categoryId: round.config.categoryId,
+    spyCount: round.config.spyCount,
+    timerDuration: round.config.timerDuration,
+    currentPlayerIndex: 0,
+  };
+}
+
+/** Back to the setup screen, keeping the last used config. */
+function toSetup(state: GameState): GameState {
+  return { ...initialState, config: state.config };
+}
+
 export function gameReducer(state: GameState, action: GameAction): GameState {
   switch (action.type) {
     case 'START_GAME': {
       if (!isValidTransition(state.phase, 'handoff')) return state;
-      return {
-        ...state,
-        phase: 'handoff',
-        config: action.config,
-        players: action.players,
-        secretWord: action.secretWord,
-        category: action.category,
-        categoryId: action.config.categoryId,
-        spyCount: action.config.spyCount,
-        timerDuration: action.config.timerDuration,
-        currentPlayerIndex: 0,
-      };
+      return startRound(state, action);
     }
 
     case 'SHOW_HANDOFF': {
@@ -79,27 +96,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 
     case 'PLAY_AGAIN': {
       if (!isValidTransition(state.phase, 'handoff')) return state;
-      return {
-        ...state,
-        phase: 'handoff',
-        config: action.config,
-        players: action.players,
-        secretWord: action.secretWord,
-        category: action.category,
-        categoryId: action.config.categoryId,
-        spyCount: action.config.spyCount,
-        timerDuration: action.config.timerDuration,
-        currentPlayerIndex: 0,
-      };
+      return startRound(state, action);
     }
 
     case 'NEW_SETUP': {
       if (!isValidTransition(state.phase, 'setup')) return state;
-      return { ...initialState, config: state.config };
+      return toSetup(state);
     }
 
     case 'RETURN_HOME': {
-      return { ...initialState, config: state.config };
+      return toSetup(state);
     }
 
     default:

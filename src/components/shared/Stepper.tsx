@@ -6,10 +6,9 @@ interface StepperProps {
   min: number;
   max: number;
   onChange: (value: number) => void;
-  error?: string;
 }
 
-export function Stepper({ label, value, min, max, onChange, error }: StepperProps) {
+export function Stepper({ label, value, min, max, onChange }: StepperProps) {
   return (
     <div>
       <div className={styles.label}>{label}</div>
@@ -34,7 +33,6 @@ export function Stepper({ label, value, min, max, onChange, error }: StepperProp
           +
         </button>
       </div>
-      {error && <div className={styles.error} role="alert">{error}</div>}
     </div>
   );
 }

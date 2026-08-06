@@ -4,7 +4,7 @@ import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
 import { useSettings } from '../../hooks/useSettings';
 import { useTimer } from '../../hooks/useTimer';
-import { formatTime, formatElapsed } from '../../logic/timer';
+import { formatTime } from '../../logic/timer';
 import styles from './DiscussionTimer.module.css';
 
 export function DiscussionTimer() {
@@ -83,7 +83,7 @@ export function DiscussionTimer() {
       ) : (
         <>
           <div className={`${styles.timerDisplay} ${hasNoTimer ? styles.stopwatch : ''}`}>
-            {hasNoTimer ? formatElapsed(elapsedMs) : formatTime(remainingMs ?? 0)}
+            {hasNoTimer ? formatTime(elapsedMs) : formatTime(remainingMs ?? 0)}
           </div>
           <div className={styles.label}>
             {hasNoTimer ? 'Elapsed Time' : isPaused ? 'Paused' : 'Remaining'}

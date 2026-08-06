@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { GameProvider } from '../../hooks/useGame';
+import { GameProvider } from '../../hooks/gameProvider';
 import { PlayScreen } from '../../screens/PlayScreen';
 
 // Mock localStorage

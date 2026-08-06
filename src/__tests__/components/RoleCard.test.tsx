@@ -2,7 +2,8 @@ import { useEffect } from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { GameProvider, useGame } from '../../hooks/useGame';
+import { GameProvider } from '../../hooks/gameProvider';
+import { useGame } from '../../hooks/useGame';
 import { RoleCardConcealed, RoleCardRevealed } from '../../components/game/RoleCard';
 import type { GameConfig, Player } from '../../types/game';
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { GameProvider } from '../../hooks/useGame';
+import { GameProvider } from '../../hooks/gameProvider';
 import { ResultsScreen } from '../../components/game/ResultsScreen';
 
 // We can't easily set game state from outside the provider for the ResultsScreen,

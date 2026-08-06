@@ -45,14 +45,3 @@ export function safeSetJSON(key: string, value: unknown): boolean {
     return false;
   }
 }
-
-export function isLocalStorageAvailable(): boolean {
-  try {
-    const key = '__ls_test__';
-    localStorage.setItem(key, key);
-    localStorage.removeItem(key);
-    return true;
-  } catch {
-    return false;
-  }
-}

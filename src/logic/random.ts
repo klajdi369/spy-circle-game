@@ -32,7 +32,7 @@ export function randomInt(min: number, max: number): number {
 /**
  * Fisher-Yates shuffle using Crypto API.
  */
-export function shuffle<T>(array: T[]): T[] {
+function shuffle<T>(array: T[]): T[] {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
     const j = randomInt(0, i + 1);

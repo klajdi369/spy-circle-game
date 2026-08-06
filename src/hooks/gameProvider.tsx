@@ -1,15 +1,7 @@
-import { createContext, useContext, useReducer, useCallback, type Dispatch } from 'react';
-import type { GameState, GameAction, GameConfig, Player } from '../types/game';
+import { useReducer, useCallback } from 'react';
+import type { GameConfig, Player } from '../types/game';
 import { gameReducer, initialState } from '../logic/gameState';
-
-interface GameContextValue {
-  state: GameState;
-  dispatch: Dispatch<GameAction>;
-  startGame: (config: GameConfig, secretWord: string, category: string, players: Player[]) => void;
-  playAgain: (config: GameConfig, secretWord: string, category: string, players: Player[]) => void;
-}
-
-const GameContext = createContext<GameContextValue | null>(null);
+import { GameContext } from './useGame';
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(gameReducer, initialState);
@@ -33,10 +25,4 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       {children}
     </GameContext.Provider>
   );
-}
-
-export function useGame(): GameContextValue {
-  const ctx = useContext(GameContext);
-  if (!ctx) throw new Error('useGame must be used within GameProvider');
-  return ctx;
 }
