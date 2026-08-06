@@ -5,7 +5,8 @@ import { safeGetJSON, safeSetJSON, safeRemoveItem } from './safeStorage';
 const STORAGE_KEY = 'spy-circle-settings';
 
 export function loadSettings(): AppSettings {
-  return safeGetJSON<AppSettings>(STORAGE_KEY, DEFAULT_SETTINGS);
+  const stored = safeGetJSON<Partial<AppSettings>>(STORAGE_KEY, {});
+  return { ...DEFAULT_SETTINGS, ...stored };
 }
 
 export function saveSettings(settings: AppSettings): boolean {

@@ -10,6 +10,7 @@ import {
 interface TimerReturn {
   remainingMs: number | null;
   elapsedMs: number;
+  totalMs: number | null;
   isExpired: boolean;
   isPaused: boolean;
   isRunning: boolean;
@@ -84,9 +85,14 @@ export function useTimer(initialTotalSeconds: number | null): TimerReturn {
     setDisplay(computeTimerDisplay(stateRef.current, Date.now()));
   }, []);
 
+  const totalMs = stateRef.current.totalSeconds !== null
+    ? stateRef.current.totalSeconds * 1000
+    : null;
+
   return {
     remainingMs: display.remainingMs,
     elapsedMs: display.elapsedMs,
+    totalMs,
     isExpired: display.isExpired,
     isPaused: stateRef.current.isPaused,
     isRunning,

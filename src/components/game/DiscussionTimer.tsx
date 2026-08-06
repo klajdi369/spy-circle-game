@@ -13,6 +13,7 @@ export function DiscussionTimer() {
   const {
     remainingMs,
     elapsedMs,
+    totalMs,
     isExpired,
     isPaused,
     pause,
@@ -50,8 +51,9 @@ export function DiscussionTimer() {
     }
   }, [isExpired, settings.vibration]);
 
-  const totalSec = state.timerDuration ?? 0;
-  const progress = remainingMs !== null ? remainingMs / (totalSec * 1000) : 0;
+  const progress = remainingMs !== null && totalMs !== null && totalMs > 0
+    ? remainingMs / totalMs
+    : 0;
   const circumference = 2 * Math.PI * 90;
 
   const isEnded = state.phase === 'finished';

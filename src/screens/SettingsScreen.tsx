@@ -47,6 +47,13 @@ export function SettingsScreen() {
           </div>
           <div className={styles.row}>
             <Toggle
+              label="Show category in results"
+              checked={settings.showCategoryInResults}
+              onChange={(v) => updateSetting('showCategoryInResults', v)}
+            />
+          </div>
+          <div className={styles.row}>
+            <Toggle
               label="Sound"
               checked={settings.sound}
               onChange={(v) => updateSetting('sound', v)}

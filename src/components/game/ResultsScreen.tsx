@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { Eye, Users, Timer } from 'lucide-react';
 import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
+import { useSettings } from '../../hooks/useSettings';
 import { useWordLibrary } from '../../hooks/useWordLibrary';
 import { pickRandom, pickRandomIndices } from '../../logic/random';
 import { generateDefaultNames } from '../../logic/playerNames';
@@ -18,6 +19,7 @@ function formatTimerDuration(seconds: number | null): string {
 export function ResultsScreen() {
   const { state, playAgain, dispatch } = useGame();
   const { library } = useWordLibrary();
+  const { settings } = useSettings();
 
   const spies = useMemo(
     () => state.players.filter((p) => p.isSpy),
@@ -69,7 +71,9 @@ export function ResultsScreen() {
       <div className={styles.wordCard}>
         <div className={styles.wordLabel}>The Secret Word</div>
         <div className={styles.wordValue}>{state.secretWord}</div>
-        <div className={styles.wordCategory}>{state.category}</div>
+        {settings.showCategoryInResults && (
+          <div className={styles.wordCategory}>{state.category}</div>
+        )}
       </div>
 
       <div className={styles.spySection}>
