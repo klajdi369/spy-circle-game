@@ -51,6 +51,12 @@
   display: flex;
   gap: var(--space-lg);
   align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.row > div {
+  flex: 1;
+  min-width: 150px;
 }
 
 .timerGroup {

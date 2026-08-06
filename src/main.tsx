@@ -12,11 +12,5 @@ createRoot(rootElement).render(
   </StrictMode>,
 );
 
-// Register PWA service worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {
-      // Service worker registration failed - app still works without it
-    });
-  });
-}
+// The PWA service worker is registered by vite-plugin-pwa's injected script
+// in production builds. The app still works without it (no offline caching).

@@ -39,7 +39,6 @@ export interface GameState {
 export type GameAction =
   | { type: 'START_GAME'; config: GameConfig; secretWord: string; category: string; players: Player[] }
   | { type: 'SHOW_HANDOFF' }
-  | { type: 'READY_TO_REVEAL' }
   | { type: 'REVEAL_ROLE' }
   | { type: 'HIDE_ROLE' }
   | { type: 'NEXT_PLAYER' }

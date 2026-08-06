@@ -21,6 +21,8 @@
   font-weight: 800;
   color: var(--color-text);
   margin-bottom: var(--space-sm);
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .instruction {

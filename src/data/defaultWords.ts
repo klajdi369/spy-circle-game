@@ -1,7 +1,8 @@
 import type { Category } from '../types/words';
+import { generateUUID } from '../logic/random';
 
 function generateId(): string {
-  return crypto.randomUUID();
+  return generateUUID();
 }
 
 export function createDefaultCategories(): Category[] {

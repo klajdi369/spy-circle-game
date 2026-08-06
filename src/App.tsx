@@ -79,6 +79,17 @@ function AppContent() {
 
   const isInGame = state.phase !== 'setup' && state.phase !== 'results';
 
+  // Confirm before closing/refreshing the tab during an active round
+  useEffect(() => {
+    if (!settings.confirmBeforeLeaving || !isInGame) return;
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [settings.confirmBeforeLeaving, isInGame]);
+
   const handleNavigate = useCallback(
     (newView: NavView) => {
       if (isInGame && settings.confirmBeforeLeaving) {

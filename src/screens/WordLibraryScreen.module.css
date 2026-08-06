@@ -113,6 +113,8 @@
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
   margin: 2px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }
 
 .wordChip button {

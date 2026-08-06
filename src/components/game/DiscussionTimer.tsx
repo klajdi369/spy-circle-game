@@ -22,8 +22,25 @@ export function DiscussionTimer() {
 
   const hasNoTimer = state.timerDuration === null;
   const vibratedRef = useRef(false);
+  const endedRef = useRef(false);
 
-  // Vibrate when timer expires
+  // When the timer runs out naturally, move to the 'finished' phase so the
+  // "Reveal Results" transition is valid (discussion -> finished -> results).
+  useEffect(() => {
+    if (isExpired && state.phase === 'discussion' && !endedRef.current) {
+      endedRef.current = true;
+      dispatch({ type: 'END_DISCUSSION' });
+    }
+  }, [isExpired, state.phase, dispatch]);
+
+  // Stop the ticking clock once the round is finished.
+  useEffect(() => {
+    if (state.phase === 'finished' && !isPaused) {
+      pause();
+    }
+  }, [state.phase, isPaused, pause]);
+
+  // Vibrate when the timer expires.
   useEffect(() => {
     if (isExpired && !vibratedRef.current) {
       vibratedRef.current = true;
@@ -37,20 +54,26 @@ export function DiscussionTimer() {
   const progress = remainingMs !== null ? remainingMs / (totalSec * 1000) : 0;
   const circumference = 2 * Math.PI * 90;
 
+  const isEnded = state.phase === 'finished';
+
   const handleEndEarly = useCallback(() => {
     dispatch({ type: 'END_DISCUSSION' });
   }, [dispatch]);
 
+  const handleReveal = useCallback(() => {
+    dispatch({ type: 'SHOW_RESULTS' });
+  }, [dispatch]);
+
   return (
     <div className={styles.container}>
-      {isExpired ? (
+      {isEnded ? (
         <>
           <div className={styles.expiredMessage}>Time&apos;s Up!</div>
           <p className={styles.expiredSub}>Discussion has ended.</p>
           <Button
             variant="primary"
             size="large"
-            onClick={() => dispatch({ type: 'SHOW_RESULTS' })}
+            onClick={handleReveal}
           >
             Reveal Results
           </Button>

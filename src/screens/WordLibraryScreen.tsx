@@ -259,6 +259,7 @@ export function WordLibraryScreen() {
                     label=""
                     checked={cat.enabled}
                     onChange={() => toggleCategory(cat.id)}
+                    ariaLabel={`${cat.enabled ? 'Disable' : 'Enable'} category ${cat.name}`}
                   />
                   <Button
                     variant="ghost"
@@ -415,8 +416,9 @@ export function WordLibraryScreen() {
           </>
         }
       >
-        <label className={styles.fieldLabel}>Category Name</label>
+        <label className={styles.fieldLabel} htmlFor="new-category-name">Category Name</label>
         <input
+          id="new-category-name"
           className={styles.modalInput}
           type="text"
           value={newCategoryName}
@@ -449,8 +451,9 @@ export function WordLibraryScreen() {
           </>
         }
       >
-        <label className={styles.fieldLabel}>New Name</label>
+        <label className={styles.fieldLabel} htmlFor="rename-category-name">New Name</label>
         <input
+          id="rename-category-name"
           className={styles.modalInput}
           type="text"
           value={renameValue}
@@ -482,8 +485,9 @@ export function WordLibraryScreen() {
           </>
         }
       >
-        <label className={styles.fieldLabel}>Word</label>
+        <label className={styles.fieldLabel} htmlFor="edit-word-input">Word</label>
         <input
+          id="edit-word-input"
           className={styles.modalInput}
           type="text"
           value={editWordValue}

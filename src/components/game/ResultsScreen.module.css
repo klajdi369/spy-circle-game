@@ -114,6 +114,10 @@
   text-align: center;
 }
 
+.statCardWide {
+  grid-column: 1 / -1;
+}
+
 .statValue {
   font-size: var(--text-xl);
   font-weight: 700;

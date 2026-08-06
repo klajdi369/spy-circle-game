@@ -82,7 +82,7 @@ export function PlayScreen() {
   const handleTimerChange = useCallback((value: number | null) => {
     setTimerDuration(value);
     updateSetting('lastTimerDuration', value);
-  }, []);
+  }, [updateSetting]);
 
   const handleStartGame = useCallback(() => {
     setError(null);

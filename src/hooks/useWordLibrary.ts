@@ -9,6 +9,7 @@ import {
   restoreAllDefaults,
 } from '../storage/wordLibrary';
 import { removeDuplicateWords, validateCategoryName, isCategoryNameDuplicate } from '../logic/validation';
+import { generateUUID } from '../logic/random';
 
 export function useWordLibrary() {
   const [library, setLibrary] = useState<WordLibrary>(loadWordLibrary);
@@ -32,7 +33,7 @@ export function useWordLibrary() {
     }
 
     const newCategory: Category = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       name: cleaned,
       enabled: true,
       isPredefined: false,
