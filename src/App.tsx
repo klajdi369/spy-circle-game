@@ -70,7 +70,7 @@ function AppContent() {
     };
   }, [state.phase, settings.preventScreenSleep]);
 
-  const isInGame = state.phase !== 'setup' && state.phase !== 'results';
+  const isInGame = state.phase !== 'setup';
 
   // Confirm before closing/refreshing the tab during an active round
   useEffect(() => {
