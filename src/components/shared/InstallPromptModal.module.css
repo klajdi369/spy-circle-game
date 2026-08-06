@@ -1,0 +1,37 @@
+.body {
+  color: var(--color-text-secondary);
+}
+
+.text {
+  margin-bottom: var(--space-md);
+  line-height: 1.5;
+}
+
+.iosSteps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.iosSteps li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+}
+
+.iosSteps li svg {
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.iosSteps strong {
+  color: var(--color-text);
+}

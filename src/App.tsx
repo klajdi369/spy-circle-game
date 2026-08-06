@@ -11,6 +11,8 @@ import { HandoffScreen } from './components/game/HandoffScreen';
 import { RoleCardConcealed, RoleCardRevealed, ReadyScreen } from './components/game/RoleCard';
 import { DiscussionTimer } from './components/game/DiscussionTimer';
 import { ResultsScreen } from './components/game/ResultsScreen';
+import { InstallPromptModal } from './components/shared/InstallPromptModal';
+import { useInstallPrompt } from './hooks/useInstallPrompt';
 import styles from './App.module.css';
 
 function GameFlow() {
@@ -42,8 +44,16 @@ function AppContent() {
   const [view, setView] = useState<NavView>('play');
   const { state } = useGame();
   const { settings } = useSettings();
+  const installPrompt = useInstallPrompt();
 
   useThemeEffect(settings.theme);
+
+  // Offer install shortly after load, when the browser supports it
+  useEffect(() => {
+    if (!installPrompt.promptReady) return;
+    const timer = setTimeout(installPrompt.open, 2500);
+    return () => clearTimeout(timer);
+  }, [installPrompt.promptReady, installPrompt.open]);
 
   // Prevent screen sleep during active game
   useEffect(() => {
@@ -97,12 +107,23 @@ function AppContent() {
   );
 
   // Show game flow or navigation screens
+  const installModal = (
+    <InstallPromptModal
+      open={installPrompt.showPrompt}
+      isIOS={installPrompt.isIOSHint}
+      onClose={installPrompt.close}
+      onInstall={installPrompt.install}
+      onDismiss={installPrompt.dismiss}
+    />
+  );
+
   if (isInGame) {
     return (
       <div className={styles.app}>
         <main className={styles.main}>
           <GameFlow />
         </main>
+        {installModal}
       </div>
     );
   }
@@ -116,6 +137,7 @@ function AppContent() {
         {view === 'settings' && <SettingsScreen />}
       </main>
       <BottomNav active={view} onNavigate={handleNavigate} />
+      {installModal}
     </div>
   );
 }
