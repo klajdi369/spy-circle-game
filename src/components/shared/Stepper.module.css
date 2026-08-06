@@ -23,6 +23,7 @@
   min-width: 44px;
   text-align: center;
   color: var(--color-accent);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (min-width: 500px) {
@@ -67,6 +68,7 @@
   background: var(--color-accent);
   color: var(--color-accent-text);
   border-color: var(--color-accent);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
 }
 
 .button:active:not(:disabled) {

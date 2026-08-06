@@ -13,7 +13,7 @@
 .icon {
   color: var(--color-accent);
   margin-bottom: var(--space-xl);
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .playerName {
@@ -23,6 +23,7 @@
   margin-bottom: var(--space-sm);
   word-break: break-word;
   max-width: 100%;
+  letter-spacing: -0.01em;
 }
 
 .instruction {
@@ -33,7 +34,7 @@
 
 .warning {
   font-size: var(--text-sm);
-  color: var(--color-danger);
+  color: var(--color-warning);
   font-weight: 600;
   margin-bottom: var(--space-xl);
   display: flex;
@@ -45,7 +46,7 @@
 .progress {
   font-size: var(--text-sm);
   color: var(--color-text-muted);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-sm);
 }
 
 .progressBar {

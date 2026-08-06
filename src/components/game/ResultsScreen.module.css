@@ -59,15 +59,21 @@
   }
 }
 
+/* ── Word reveal card ─────────────────────────────────────── */
+
 .wordCard {
   width: 100%;
-  background: var(--color-bg-card);
-  border: 2px solid var(--color-accent);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+    var(--color-bg-card);
+  border: 2px solid var(--color-border-light);
   border-radius: var(--radius-xl);
   padding: var(--space-lg);
   text-align: center;
   margin-bottom: var(--space-md);
-  box-shadow: 0 0 40px rgba(245, 158, 11, 0.15);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 @media (min-width: 500px) {
@@ -103,6 +109,8 @@
   border-radius: var(--radius-full);
 }
 
+/* ── Spy list ─────────────────────────────────────────────── */
+
 .spySection {
   width: 100%;
   margin-bottom: var(--space-md);
@@ -111,7 +119,7 @@
 .spyTitle {
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--color-danger);
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: var(--space-sm);
@@ -126,14 +134,16 @@
 }
 
 .spyChip {
-  background: rgba(239, 68, 68, 0.15);
-  color: var(--color-danger);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
   padding: 6px 16px;
   border-radius: var(--radius-full);
   font-weight: 600;
   font-size: var(--text-sm);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid var(--color-border-light);
 }
+
+/* ── Stats grid ───────────────────────────────────────────── */
 
 .stats {
   width: 100%;
@@ -164,6 +174,7 @@
 
 .statCard {
   background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
   border-radius: var(--radius-md);
   padding: var(--space-sm) var(--space-md);
   text-align: center;
@@ -194,6 +205,8 @@
   color: var(--color-text-muted);
   margin-top: 2px;
 }
+
+/* ── Actions ──────────────────────────────────────────────── */
 
 .actions {
   width: 100%;

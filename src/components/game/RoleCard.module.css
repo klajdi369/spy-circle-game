@@ -10,6 +10,8 @@
   min-height: calc(100dvh - var(--nav-height) - var(--safe-bottom));
 }
 
+/* ── Card shell ────────────────────────────────────────────── */
+
 .card {
   width: 100%;
   max-width: 320px;
@@ -21,12 +23,22 @@
   justify-content: center;
   padding: var(--space-xl);
   cursor: pointer;
-  transition: all 400ms ease;
+  transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   position: relative;
   overflow: hidden;
+
+  /* Same surface for face-down, civilian revealed, AND spy revealed —
+     no color flash that could reflect on the player's face. */
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 60%),
+    var(--color-bg-card);
+  border: 2px solid var(--color-border);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
 .card:focus-visible {
@@ -34,22 +46,77 @@
   outline-offset: 2px;
 }
 
+/* ── Face-down state ───────────────────────────────────────── */
+
 .cardFaceDown {
-  background: var(--color-bg-tertiary);
-  border: 2px dashed var(--color-border);
+  border-style: dashed;
+  border-color: var(--color-border);
   color: var(--color-text-muted);
 }
 
 .cardFaceDown:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: var(--color-text-muted);
+  color: var(--color-text-secondary);
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
-.cardRevealed {
-  background: var(--color-bg-card);
-  border: 2px solid var(--color-accent);
-  box-shadow: 0 0 40px rgba(245, 158, 11, 0.2);
+.cardFaceDown:active {
+  transform: scale(0.97);
 }
+
+/* ── Revealed state (shared by civilian AND spy) ──────────── */
+
+.cardRevealed {
+  border-style: solid;
+  border-color: var(--color-border-light);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.cardRevealed:hover {
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.cardRevealed:active {
+  transform: scale(0.97);
+}
+
+/* ── Decorative corner accents ────────────────────────────── */
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 20px;
+  height: 20px;
+  border-top: 2px solid var(--color-border-light);
+  border-left: 2px solid var(--color-border-light);
+  border-radius: 4px 0 0 0;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  border-bottom: 2px solid var(--color-border-light);
+  border-right: 2px solid var(--color-border-light);
+  border-radius: 0 0 4px 0;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ── Hint text below the card ──────────────────────────────── */
 
 .cardHint {
   font-size: var(--text-sm);
@@ -60,25 +127,35 @@
   gap: var(--space-xs);
 }
 
+/* ── Role label ────────────────────────────────────────────── */
+
 .roleLabel {
   font-size: var(--text-xs);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--color-accent);
   margin-bottom: var(--space-sm);
+  position: relative;
+  z-index: 1;
 }
 
 .spyLabel {
-  color: var(--color-danger);
+  /* Same card surface — only the label text tone differs subtly */
+  color: var(--color-text-secondary);
 }
 
+/* ── Secret word ───────────────────────────────────────────── */
+
 .secretWord {
-  font-size: var(--text-3xl);
+  font-size: var(--text-4xl);
   font-weight: 800;
   color: var(--color-text);
   margin-bottom: var(--space-sm);
   word-break: break-word;
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.01em;
 }
 
 .category {
@@ -86,27 +163,38 @@
   color: var(--color-text-secondary);
   margin-bottom: var(--space-md);
   background: var(--color-bg-tertiary);
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: var(--radius-full);
+  position: relative;
+  z-index: 1;
 }
 
 .reminder {
   font-size: var(--text-xs);
   color: var(--color-text-muted);
   font-style: italic;
+  position: relative;
+  z-index: 1;
 }
+
+/* ── Spy content ───────────────────────────────────────────── */
 
 .spyMessage {
   font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-text);
   margin-bottom: var(--space-sm);
+  position: relative;
+  z-index: 1;
 }
 
 .spyExplanation {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  line-height: 1.6;
+  line-height: 1.7;
+  position: relative;
+  z-index: 1;
+  max-width: 260px;
 }
 
 .spyCategory {
@@ -114,6 +202,8 @@
   color: var(--color-text-secondary);
   margin-top: var(--space-md);
   background: var(--color-bg-tertiary);
-  padding: 4px 12px;
+  padding: 5px 14px;
   border-radius: var(--radius-full);
+  position: relative;
+  z-index: 1;
 }

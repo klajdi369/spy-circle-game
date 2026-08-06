@@ -49,6 +49,7 @@
   font-size: var(--text-sm);
   font-weight: 500;
   margin-bottom: var(--space-xl);
+  border: 1px solid var(--color-border-light);
 }
 
 .progressRing {
@@ -73,10 +74,12 @@
   stroke: var(--color-accent);
   stroke-width: 8;
   stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.3));
 }
 
 .progressFillExpired {
   stroke: var(--color-danger);
+  filter: none;
 }
 
 .controls {
@@ -89,7 +92,7 @@
 .expiredMessage {
   font-size: var(--text-2xl);
   font-weight: 700;
-  color: var(--color-danger);
+  color: var(--color-text);
   margin-bottom: var(--space-sm);
 }
 

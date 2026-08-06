@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
 import { useSettings } from '../../hooks/useSettings';
@@ -81,7 +81,7 @@ export function RoleCardRevealed() {
         {player.isSpy ? (
           <>
             <div className={`${styles.roleLabel} ${styles.spyLabel}`}>
-              <AlertTriangle size={16} style={{ display: 'inline', marginRight: 4 }} />
+              <EyeOff size={16} style={{ display: 'inline', marginRight: 4 }} />
               You are a spy
             </div>
             <p className={styles.spyMessage}>Your mission</p>
