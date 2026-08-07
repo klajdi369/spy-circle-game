@@ -17,6 +17,29 @@ import { UpdatePrompt } from './components/shared/UpdatePrompt';
 import { useInstallPrompt } from './hooks/useInstallPrompt';
 import styles from './App.module.css';
 
+const HISTORY_VIEW_KEY = 'spyCircleView';
+
+function historyView(state: unknown): NavView | null {
+  if (!state || typeof state !== 'object') return null;
+  const value = (state as Record<string, unknown>)[HISTORY_VIEW_KEY];
+  return value === 'play' || value === 'library' || value === 'help' || value === 'settings'
+    ? value
+    : null;
+}
+
+function setHistoryView(view: NavView, mode: 'push' | 'replace') {
+  const currentState = window.history.state;
+  const state = {
+    ...(currentState && typeof currentState === 'object' ? currentState : {}),
+    [HISTORY_VIEW_KEY]: view,
+  };
+  if (mode === 'push') {
+    window.history.pushState(state, '', window.location.href);
+  } else {
+    window.history.replaceState(state, '', window.location.href);
+  }
+}
+
 function GameFlow() {
   const { state } = useGame();
 
@@ -41,12 +64,22 @@ function GameFlow() {
 }
 
 function AppContent() {
-  const [view, setView] = useState<NavView>('play');
+  const [view, setView] = useState<NavView>(
+    () => historyView(window.history.state) ?? 'play',
+  );
   const { state } = useGame();
   const { settings } = useSettings();
   const installPrompt = useInstallPrompt();
 
   useThemeEffect(settings.theme);
+
+  // Give the initial Play screen a history state. Sub-screens can then add
+  // one entry that the Android hardware back button can reliably pop.
+  useEffect(() => {
+    if (!historyView(window.history.state)) {
+      setHistoryView('play', 'replace');
+    }
+  }, []);
 
   // Offer install shortly after load, when the browser supports it
   useEffect(() => {
@@ -95,44 +128,41 @@ function AppContent() {
 
   const handleNavigate = useCallback(
     (newView: NavView) => {
+      if (newView === view) return;
       if (isInGame && settings.confirmBeforeLeaving) {
         const confirmed = window.confirm(
           'A game is in progress. Leaving will lose the current round. Are you sure?',
         );
         if (!confirmed) return;
       }
+
+      if (newView === 'play') {
+        setView('play');
+        if (historyView(window.history.state) !== 'play') {
+          window.history.back();
+        } else {
+          setHistoryView('play', 'replace');
+        }
+        return;
+      }
+
+      setHistoryView(newView, view === 'play' ? 'push' : 'replace');
       setView(newView);
     },
-    [isInGame, settings.confirmBeforeLeaving],
+    [isInGame, settings.confirmBeforeLeaving, view],
   );
 
-  // Push history state so Android back button has something to pop.
-  // When leaving the main screen, push a state; between sub-screens replace
-  // it so a single back press always returns to the main screen.
+  // Restore the destination represented by browser history. Switching between
+  // sub-screens replaces their single entry, so Back always returns to Play.
   useEffect(() => {
-    if (isInGame) return;
-    if (view !== 'play') {
-      const hasHistoryState = window.history.state?.view !== undefined;
-      if (!hasHistoryState) {
-        window.history.pushState({ view: 'play' }, '', '');
-      } else {
-        window.history.replaceState({ view: 'play' }, '', '');
-      }
-    }
-  }, [view, isInGame]);
-
-  // Handle hardware back button (Android) — return to main screen instead of closing the app
-  useEffect(() => {
-    const handlePopState = () => {
+    const handlePopState = (event: PopStateEvent) => {
       if (isInGame) return;
-      if (view !== 'play') {
-        setView('play');
-      }
+      setView(historyView(event.state) ?? 'play');
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [view, isInGame]);
+  }, [isInGame]);
 
   // Show game flow or navigation screens
   const installModal = (
@@ -152,7 +182,6 @@ function AppContent() {
           <GameFlow />
         </main>
         {installModal}
-        <UpdatePrompt />
       </div>
     );
   }
@@ -167,7 +196,6 @@ function AppContent() {
       </main>
       <BottomNav active={view} onNavigate={handleNavigate} />
       {installModal}
-      <UpdatePrompt />
     </div>
   );
 }
@@ -176,6 +204,7 @@ export default function App() {
   return (
     <GameProvider>
       <AppContent />
+      <UpdatePrompt />
     </GameProvider>
   );
 }
