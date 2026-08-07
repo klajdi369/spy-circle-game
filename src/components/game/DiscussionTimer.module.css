@@ -105,3 +105,34 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
+
+/* ── Short screens ─────────────────────────────────────────── */
+
+@media (max-height: 700px) {
+  .container {
+    padding: var(--space-md) var(--space-sm);
+  }
+
+  .timerDisplay {
+    font-size: 4rem;
+    margin-bottom: var(--space-xs);
+  }
+
+  .label {
+    margin-bottom: var(--space-md);
+  }
+
+  .categoryTag {
+    margin-bottom: var(--space-md);
+  }
+
+  .progressRing {
+    width: 160px;
+    height: 160px;
+    margin-bottom: var(--space-md);
+  }
+
+  .expiredSub {
+    margin-bottom: var(--space-md);
+  }
+}

@@ -65,3 +65,23 @@
   border-radius: 2px;
   transition: width var(--transition-base);
 }
+
+/* ── Short screens ─────────────────────────────────────────── */
+
+@media (max-height: 700px) {
+  .container {
+    padding: var(--space-md);
+  }
+
+  .icon {
+    margin-bottom: var(--space-md);
+  }
+
+  .progressBar {
+    margin-bottom: var(--space-lg);
+  }
+
+  .warning {
+    margin-bottom: var(--space-lg);
+  }
+}

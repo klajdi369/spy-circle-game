@@ -1,10 +1,11 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Eye, Users, Clock, BookOpen } from 'lucide-react';
+import { Eye, Users, Clock, ChevronRight } from 'lucide-react';
 import { useGame } from '../hooks/useGame';
 import { useWordLibrary } from '../hooks/useWordLibrary';
 import { useSettings } from '../hooks/useSettings';
 import { Button } from '../components/shared/Button';
 import { Card } from '../components/shared/Card';
+import { Modal } from '../components/shared/Modal';
 import { Stepper } from '../components/shared/Stepper';
 import { Toggle } from '../components/shared/Toggle';
 import { validateSpyCount, clampSpyCount, hasUsableWords } from '../logic/validation';
@@ -12,8 +13,6 @@ import { generateDefaultNames, preserveNames } from '../logic/playerNames';
 import { pickRandom, pickRandomIndices } from '../logic/random';
 import type { GameConfig, Player } from '../types/game';
 import styles from './PlayScreen.module.css';
-
-const ALL_CATEGORIES_ID = '__all__';
 
 const TIMER_OPTIONS = [
   { label: '1 min', value: 60 },
@@ -36,8 +35,8 @@ export function PlayScreen() {
   const [timerDuration, setTimerDuration] = useState<number | null>(
     settings.lastTimerDuration ?? state.config.timerDuration,
   );
-  const [categoryId, setCategoryId] = useState<string>(ALL_CATEGORIES_ID);
   const [usePlayerNames, setUsePlayerNames] = useState(state.config.usePlayerNames);
+  const [namesModalOpen, setNamesModalOpen] = useState(false);
   const [playerNames, setPlayerNames] = useState<string[]>(() =>
     state.config.playerNames.length > 0
       ? preserveNames(state.config.playerNames, playerCount)
@@ -55,13 +54,20 @@ export function PlayScreen() {
     [playerCount, spyCount],
   );
 
-  const canStart = useMemo(() => {
-    if (categoryId === ALL_CATEGORIES_ID) {
-      return hasUsableWords(enabledCategories);
-    }
-    const cat = library.categories.find((c) => c.id === categoryId);
-    return cat && cat.enabled && cat.words.length > 0;
-  }, [categoryId, enabledCategories, library.categories]);
+  const canStart = useMemo(
+    () => hasUsableWords(enabledCategories),
+    [enabledCategories],
+  );
+
+  // One-line summary of the current name setup, shown on the row that opens the editor.
+  const namesSummary = useMemo(() => {
+    if (!usePlayerNames) return 'Default names';
+    const trimmed = playerNames.map((n) => n.trim()).filter(Boolean);
+    if (trimmed.length === 0) return 'No custom names yet';
+    const shown = trimmed.slice(0, 2).join(', ');
+    const rest = trimmed.length - 2;
+    return rest > 0 ? `${shown}, +${rest} more` : shown;
+  }, [usePlayerNames, playerNames]);
 
   const handlePlayerCountChange = useCallback(
     (newCount: number) => {
@@ -90,17 +96,13 @@ export function PlayScreen() {
     setError(null);
 
     // Select category
-    let selectedCategory = enabledCategories.find((c) => c.id === categoryId);
-    if (categoryId === ALL_CATEGORIES_ID) {
-      if (enabledCategories.length === 0) {
-        setError('No categories with words available. Enable at least one category with words in the Word Library.');
-        return;
-      }
-      selectedCategory = pickRandom(enabledCategories);
+    if (enabledCategories.length === 0) {
+      setError('No categories with words available. Enable at least one category with words in the Word Library.');
+      return;
     }
-
-    if (!selectedCategory || selectedCategory.words.length === 0) {
-      setError('The selected category has no words. Choose another category or add words in the Word Library.');
+    const selectedCategory = pickRandom(enabledCategories);
+    if (!selectedCategory) {
+      setError('Could not select a category. Add or enable categories in the Word Library.');
       return;
     }
 
@@ -140,7 +142,6 @@ export function PlayScreen() {
     playerCount,
     spyCount,
     timerDuration,
-    categoryId,
     usePlayerNames,
     playerNames,
     enabledCategories,
@@ -163,7 +164,7 @@ export function PlayScreen() {
         </div>
       )}
 
-      <Card>
+      <Card className={styles.cardArea}>
         <div className={styles.section}>
           <div className={styles.sectionTitle}>
             <Users size={14} style={{ display: 'inline', marginRight: 4 }} />
@@ -211,67 +212,27 @@ export function PlayScreen() {
         </div>
 
         <div className={styles.section}>
-          <div className={styles.sectionTitle}>
-            <BookOpen size={14} style={{ display: 'inline', marginRight: 4 }} />
-            Word Category
-          </div>
-          <select
-            className={styles.select}
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            aria-label="Word category"
+          <button
+            className={styles.namesRow}
+            type="button"
+            onClick={() => setNamesModalOpen(true)}
+            aria-label={`Player names: ${namesSummary}`}
           >
-            <option value={ALL_CATEGORIES_ID}>All Categories</option>
-            {enabledCategories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name} ({cat.words.length})
-              </option>
-            ))}
-          </select>
-          {!canStart && (
-            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-danger)', marginTop: 'var(--space-sm)' }}>
-              No usable words available. Go to the Word Library to add or enable categories.
-            </p>
-          )}
-        </div>
-
-        <div className={styles.section}>
-          <Toggle
-            label="Enter player names"
-            checked={usePlayerNames}
-            onChange={(checked) => {
-              setUsePlayerNames(checked);
-              if (!checked) {
-                setPlayerNames(generateDefaultNames(playerCount));
-              }
-            }}
-          />
-          {usePlayerNames && (
-            <div className={styles.nameFields}>
-              {playerNames.map((name, i) => (
-                <div key={i} className={styles.nameField}>
-                  <span className={styles.nameNumber}>{i + 1}</span>
-                  <input
-                    className={styles.nameInput}
-                    type="text"
-                    value={name}
-                    onChange={(e) => {
-                      const next = [...playerNames];
-                      next[i] = e.target.value;
-                      setPlayerNames(next);
-                    }}
-                    placeholder={`Player ${i + 1}`}
-                    aria-label={`Player ${i + 1} name`}
-                    maxLength={30}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+            <span className={styles.namesRowText}>
+              <span className={styles.namesRowLabel}>Player Names</span>
+              <span className={styles.namesRowValue}>{namesSummary}</span>
+            </span>
+            <ChevronRight size={18} className={styles.namesRowChevron} />
+          </button>
         </div>
       </Card>
 
       <div className={styles.startArea}>
+        {!canStart && (
+          <p className={styles.startWarning}>
+            No usable words available. Go to the Word Library to add or enable categories.
+          </p>
+        )}
         <Button
           variant="primary"
           size="large"
@@ -282,6 +243,49 @@ export function PlayScreen() {
           Start Game
         </Button>
       </div>
+
+      <Modal
+        open={namesModalOpen}
+        onClose={() => setNamesModalOpen(false)}
+        title="Player Names"
+        actions={
+          <Button variant="primary" fullWidth onClick={() => setNamesModalOpen(false)}>
+            Done
+          </Button>
+        }
+      >
+        <Toggle
+          label="Use custom names"
+          checked={usePlayerNames}
+          onChange={setUsePlayerNames}
+        />
+        {usePlayerNames ? (
+          <div className={styles.nameFields}>
+            {playerNames.map((name, i) => (
+              <div key={i} className={styles.nameField}>
+                <span className={styles.nameNumber}>{i + 1}</span>
+                <input
+                  className={styles.nameInput}
+                  type="text"
+                  value={name}
+                  onChange={(e) => {
+                    const next = [...playerNames];
+                    next[i] = e.target.value;
+                    setPlayerNames(next);
+                  }}
+                  placeholder={`Player ${i + 1}`}
+                  aria-label={`Player ${i + 1} name`}
+                  maxLength={30}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className={styles.namesHint}>
+            Default names (Player 1, Player 2, &hellip;) will be used.
+          </p>
+        )}
+      </Modal>
     </div>
   );
 }

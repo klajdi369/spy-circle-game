@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { GameProvider } from '../../hooks/gameProvider';
 import { PlayScreen } from '../../screens/PlayScreen';
 
@@ -60,14 +61,64 @@ describe('PlayScreen', () => {
     expect(screen.getByText('None')).toBeInTheDocument();
   });
 
-  it('renders category selection', () => {
+  it('does not render a category picker — categories are managed in the Word Library', () => {
     renderPlayScreen();
-    expect(screen.getByText('All Categories')).toBeInTheDocument();
-    expect(screen.getByText(/Test Category/)).toBeInTheDocument();
+    expect(screen.queryByText('All Categories')).not.toBeInTheDocument();
+    expect(screen.queryByRole('combobox', { name: 'Word category' })).not.toBeInTheDocument();
   });
 
-  it('renders player name toggle', () => {
+  it('disables Start Game and warns when no usable words exist', () => {
+    localStorage.setItem(
+      'spy-circle-word-library',
+      JSON.stringify({ version: 1, categories: [] }),
+    );
     renderPlayScreen();
-    expect(screen.getByText('Enter player names')).toBeInTheDocument();
+    expect(screen.getByText(/No usable words available/)).toBeInTheDocument();
+    expect(screen.getByText('Start Game')).toBeDisabled();
+  });
+
+  it('renders the player names row with the default summary', () => {
+    renderPlayScreen();
+    expect(
+      screen.getByRole('button', { name: 'Player names: Default names' }),
+    ).toBeInTheDocument();
+  });
+
+  it('does not show name inputs on the main screen', () => {
+    renderPlayScreen();
+    expect(screen.queryByLabelText('Player 1 name')).not.toBeInTheDocument();
+  });
+
+  it('opens the player names modal from the row', async () => {
+    const user = userEvent.setup();
+    renderPlayScreen();
+    await user.click(screen.getByRole('button', { name: /Player names/ }));
+    const dialog = screen.getByRole('dialog', { name: 'Player Names' });
+    // Names off by default: hint shown, inputs hidden
+    expect(within(dialog).getByText(/Default names/)).toBeInTheDocument();
+    expect(screen.queryByLabelText('Player 1 name')).not.toBeInTheDocument();
+  });
+
+  it('reveals name inputs when custom names are enabled in the modal', async () => {
+    const user = userEvent.setup();
+    renderPlayScreen();
+    await user.click(screen.getByRole('button', { name: /Player names/ }));
+    await user.click(screen.getByRole('checkbox', { name: 'Use custom names' }));
+    expect(screen.getByLabelText('Player 1 name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Player 2 name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Player 3 name')).toBeInTheDocument();
+    // The row on the main screen reflects the new state (fields pre-fill
+    // with default names)
+    expect(
+      screen.getByRole('button', { name: 'Player names: Player 1, Player 2, +2 more' }),
+    ).toBeInTheDocument();
+  });
+
+  it('closes the player names modal via Done', async () => {
+    const user = userEvent.setup();
+    renderPlayScreen();
+    await user.click(screen.getByRole('button', { name: /Player names/ }));
+    await user.click(screen.getByText('Done'));
+    expect(screen.queryByRole('dialog', { name: 'Player Names' })).not.toBeInTheDocument();
   });
 });

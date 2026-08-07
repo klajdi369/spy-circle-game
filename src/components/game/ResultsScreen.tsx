@@ -92,7 +92,7 @@ export function ResultsScreen() {
           <div className={styles.statValue}>{state.spyCount}</div>
           <div className={styles.statLabel}>Spies</div>
         </div>
-        <div className={`${styles.statCard} ${styles.statCardWide}`}>
+        <div className={styles.statCard}>
           <Timer size={20} style={{ color: 'var(--color-text-muted)', marginBottom: 4 }} />
           <div className={styles.statValue}>{formatTimerDuration(state.timerDuration)}</div>
           <div className={styles.statLabel}>Discussion Timer</div>

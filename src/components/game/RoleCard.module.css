@@ -196,3 +196,20 @@
   position: relative;
   z-index: 1;
 }
+
+/* ── Short screens ─────────────────────────────────────────── */
+
+@media (max-height: 700px) {
+  .container {
+    padding: var(--space-md);
+  }
+
+  .card {
+    max-width: 280px;
+    padding: var(--space-md);
+  }
+
+  .cardHint {
+    margin-top: var(--space-sm);
+  }
+}
