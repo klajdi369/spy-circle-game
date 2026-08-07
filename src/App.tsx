@@ -13,6 +13,7 @@ import { RoleCardConcealed, RoleCardRevealed, ReadyScreen } from './components/g
 import { DiscussionTimer } from './components/game/DiscussionTimer';
 import { ResultsScreen } from './components/game/ResultsScreen';
 import { InstallPromptModal } from './components/shared/InstallPromptModal';
+import { UpdatePrompt } from './components/shared/UpdatePrompt';
 import { useInstallPrompt } from './hooks/useInstallPrompt';
 import styles from './App.module.css';
 
@@ -151,6 +152,7 @@ function AppContent() {
           <GameFlow />
         </main>
         {installModal}
+        <UpdatePrompt />
       </div>
     );
   }
@@ -165,6 +167,7 @@ function AppContent() {
       </main>
       <BottomNav active={view} onNavigate={handleNavigate} />
       {installModal}
+      <UpdatePrompt />
     </div>
   );
 }
