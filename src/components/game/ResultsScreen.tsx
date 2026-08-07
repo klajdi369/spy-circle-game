@@ -4,7 +4,8 @@ import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
 import { useSettings } from '../../hooks/useSettings';
 import { useWordLibrary } from '../../hooks/useWordLibrary';
-import { pickRandom, pickRandomIndices } from '../../logic/random';
+import { pickRandomIndices } from '../../logic/random';
+import { pickRandomWord } from '../../logic/wordSelection';
 import { generateDefaultNames } from '../../logic/playerNames';
 import type { Player } from '../../types/game';
 import styles from './ResultsScreen.module.css';
@@ -28,13 +29,9 @@ export function ResultsScreen() {
 
   const handlePlayAgain = useCallback(() => {
     const enabledCategories = library.categories.filter((c) => c.enabled && c.words.length > 0);
-    // Prefer the same category; if it was disabled or removed, fall back to any enabled one.
-    const selectedCategory =
-      enabledCategories.find((c) => c.id === state.config.categoryId) ?? enabledCategories[0];
-    if (!selectedCategory) return;
-
-    const secretWord = pickRandom(selectedCategory.words);
-    if (!secretWord) return;
+    const choice = pickRandomWord(enabledCategories);
+    if (!choice) return;
+    const { category: selectedCategory, word: secretWord } = choice;
 
     const spyIndices = pickRandomIndices(state.config.playerCount, state.config.spyCount);
     const names = state.config.usePlayerNames
@@ -47,7 +44,12 @@ export function ResultsScreen() {
       isSpy: spyIndices.includes(i),
     }));
 
-    playAgain(state.config, secretWord, selectedCategory.name, players);
+    playAgain(
+      { ...state.config, categoryId: selectedCategory.id },
+      secretWord,
+      selectedCategory.name,
+      players,
+    );
   }, [state, library, playAgain]);
 
   return (

@@ -10,7 +10,8 @@ import { Stepper } from '../components/shared/Stepper';
 import { Toggle } from '../components/shared/Toggle';
 import { validateSpyCount, clampSpyCount, hasUsableWords } from '../logic/validation';
 import { generateDefaultNames, preserveNames } from '../logic/playerNames';
-import { pickRandom, pickRandomIndices } from '../logic/random';
+import { pickRandomIndices } from '../logic/random';
+import { pickRandomWord } from '../logic/wordSelection';
 import type { GameConfig, Player } from '../types/game';
 import styles from './PlayScreen.module.css';
 
@@ -95,23 +96,14 @@ export function PlayScreen() {
   const handleStartGame = useCallback(() => {
     setError(null);
 
-    // Select category
-    if (enabledCategories.length === 0) {
+    // Select directly from a flat pool so every enabled word has equal odds,
+    // regardless of how many words its category contains.
+    const choice = pickRandomWord(enabledCategories);
+    if (!choice) {
       setError('No categories with words available. Enable at least one category with words in the Word Library.');
       return;
     }
-    const selectedCategory = pickRandom(enabledCategories);
-    if (!selectedCategory) {
-      setError('Could not select a category. Add or enable categories in the Word Library.');
-      return;
-    }
-
-    // Select word
-    const secretWord = pickRandom(selectedCategory.words);
-    if (!secretWord) {
-      setError('Could not select a word. Add more words to the selected category.');
-      return;
-    }
+    const { category: selectedCategory, word: secretWord } = choice;
 
     // Select spies
     const spyIndices = pickRandomIndices(playerCount, spyCount);

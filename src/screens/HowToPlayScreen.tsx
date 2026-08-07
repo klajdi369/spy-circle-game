@@ -21,7 +21,7 @@ export function HowToPlayScreen() {
               <div className={styles.stepTitle}>Configure the game</div>
               <div className={styles.stepDesc}>
                 Choose the number of players and spies, set a discussion timer,
-                and pick a word category.
+                and manage enabled categories in the Word Library.
               </div>
             </div>
           </div>
