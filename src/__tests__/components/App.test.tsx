@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from '../../App';
@@ -66,5 +66,40 @@ describe('App', () => {
       );
     });
     expect(screen.getByText('Start Game')).toBeInTheDocument();
+  });
+
+  it('returns an active game to setup on Back instead of leaving the app', async () => {
+    const user = userEvent.setup();
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    render(<App />);
+
+    await user.click(screen.getByRole('button', { name: 'Start Game' }));
+    expect(screen.getByText(/Pass the device to/)).toBeInTheDocument();
+    expect(window.history.state).toMatchObject({ spyCircleGame: true });
+
+    act(() => {
+      window.dispatchEvent(
+        new PopStateEvent('popstate', { state: { spyCircleView: 'play' } }),
+      );
+    });
+
+    expect(confirm).toHaveBeenCalledWith('Quit the current game and return to setup?');
+    expect(screen.getByRole('button', { name: 'Start Game' })).toBeInTheDocument();
+  });
+
+  it('keeps an active game open when Back confirmation is cancelled', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+    render(<App />);
+
+    await user.click(screen.getByRole('button', { name: 'Start Game' }));
+    act(() => {
+      window.dispatchEvent(
+        new PopStateEvent('popstate', { state: { spyCircleView: 'play' } }),
+      );
+    });
+
+    expect(screen.getByText(/Pass the device to/)).toBeInTheDocument();
+    expect(window.history.state).toMatchObject({ spyCircleGame: true });
   });
 });

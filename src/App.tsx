@@ -18,6 +18,7 @@ import { useInstallPrompt } from './hooks/useInstallPrompt';
 import styles from './App.module.css';
 
 const HISTORY_VIEW_KEY = 'spyCircleView';
+const HISTORY_GAME_KEY = 'spyCircleGame';
 
 function historyView(state: unknown): NavView | null {
   if (!state || typeof state !== 'object') return null;
@@ -38,6 +39,27 @@ function setHistoryView(view: NavView, mode: 'push' | 'replace') {
   } else {
     window.history.replaceState(state, '', window.location.href);
   }
+}
+
+function isGameHistoryState(state: unknown): boolean {
+  return Boolean(
+    state &&
+      typeof state === 'object' &&
+      (state as Record<string, unknown>)[HISTORY_GAME_KEY] === true,
+  );
+}
+
+function pushGameHistoryState() {
+  const currentState = window.history.state;
+  window.history.pushState(
+    {
+      ...(currentState && typeof currentState === 'object' ? currentState : {}),
+      [HISTORY_VIEW_KEY]: 'play',
+      [HISTORY_GAME_KEY]: true,
+    },
+    '',
+    window.location.href,
+  );
 }
 
 function GameFlow() {
@@ -67,7 +89,7 @@ function AppContent() {
   const [view, setView] = useState<NavView>(
     () => historyView(window.history.state) ?? 'play',
   );
-  const { state } = useGame();
+  const { state, dispatch } = useGame();
   const { settings } = useSettings();
   const installPrompt = useInstallPrompt();
 
@@ -115,6 +137,18 @@ function AppContent() {
 
   const isInGame = state.phase !== 'setup';
 
+  // Keep an in-app history entry during a round. Android Back pops this entry
+  // and returns to setup instead of closing the standalone app.
+  useEffect(() => {
+    if (isInGame) {
+      if (!isGameHistoryState(window.history.state)) pushGameHistoryState();
+      return;
+    }
+
+    // Results-screen actions can also finish a game without a Back event.
+    if (isGameHistoryState(window.history.state)) window.history.back();
+  }, [isInGame]);
+
   // Confirm before closing/refreshing the tab during an active round
   useEffect(() => {
     if (!settings.confirmBeforeLeaving || !isInGame) return;
@@ -156,13 +190,23 @@ function AppContent() {
   // sub-screens replaces their single entry, so Back always returns to Play.
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
-      if (isInGame) return;
+      if (isInGame) {
+        const shouldQuit =
+          !settings.confirmBeforeLeaving ||
+          window.confirm('Quit the current game and return to setup?');
+        if (shouldQuit) {
+          dispatch({ type: 'RETURN_HOME' });
+        } else {
+          pushGameHistoryState();
+        }
+        return;
+      }
       setView(historyView(event.state) ?? 'play');
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [isInGame]);
+  }, [dispatch, isInGame, settings.confirmBeforeLeaving]);
 
   // Show game flow or navigation screens
   const installModal = (
@@ -188,7 +232,11 @@ function AppContent() {
 
   return (
     <div className={styles.app}>
-      <main className={styles.main}>
+      <main
+        className={`${styles.main} ${styles.mainWithNav} ${
+          view === 'play' ? styles.mainLocked : ''
+        }`}
+      >
         {view === 'play' && <PlayScreen />}
         {view === 'library' && <WordLibraryScreen />}
         {view === 'help' && <HowToPlayScreen />}
