@@ -105,6 +105,34 @@ function AppContent() {
     [isInGame, settings.confirmBeforeLeaving],
   );
 
+  // Push history state so Android back button has something to pop.
+  // When leaving the main screen, push a state; between sub-screens replace
+  // it so a single back press always returns to the main screen.
+  useEffect(() => {
+    if (isInGame) return;
+    if (view !== 'play') {
+      const hasHistoryState = window.history.state?.view !== undefined;
+      if (!hasHistoryState) {
+        window.history.pushState({ view: 'play' }, '', '');
+      } else {
+        window.history.replaceState({ view: 'play' }, '', '');
+      }
+    }
+  }, [view, isInGame]);
+
+  // Handle hardware back button (Android) — return to main screen instead of closing the app
+  useEffect(() => {
+    const handlePopState = () => {
+      if (isInGame) return;
+      if (view !== 'play') {
+        setView('play');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [view, isInGame]);
+
   // Show game flow or navigation screens
   const installModal = (
     <InstallPromptModal
