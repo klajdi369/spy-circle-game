@@ -89,10 +89,12 @@ export function DiscussionTimer() {
             {hasNoTimer ? 'Elapsed Time' : isPaused ? 'Paused' : 'Remaining'}
           </div>
 
-          <div className={styles.categoryTag}>
-            <Clock size={14} />
-            Category: {state.category}
-          </div>
+          {settings.showCategoryToSpies && (
+            <div className={styles.categoryTag}>
+              <Clock size={14} />
+              Category: {state.category}
+            </div>
+          )}
 
           {!hasNoTimer && remainingMs !== null && (
             <div className={styles.progressRing}>
