@@ -5,6 +5,7 @@ import { Toggle } from '../components/shared/Toggle';
 import { Modal } from '../components/shared/Modal';
 import { useSettings } from '../hooks/useSettings';
 import { resetWordLibrary } from '../storage/wordLibrary';
+import { resetRoundHistory } from '../storage/roundHistory';
 import { resetSettings } from '../storage/settings';
 import type { ThemeMode } from '../types/settings';
 import styles from './SettingsScreen.module.css';
@@ -22,6 +23,7 @@ export function SettingsScreen() {
 
   const handleReset = useCallback(() => {
     resetWordLibrary();
+    resetRoundHistory();
     resetSettings();
     reset();
     setResetConfirm(false);
@@ -51,6 +53,16 @@ export function SettingsScreen() {
               checked={settings.showCategoryInResults}
               onChange={(v) => updateSetting('showCategoryInResults', v)}
             />
+          </div>
+          <div className={styles.row}>
+            <Toggle
+              label="Balance words and spy roles"
+              checked={settings.balanceRounds}
+              onChange={(v) => updateSetting('balanceRounds', v)}
+            />
+            <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-text-muted)', marginTop: 'var(--space-sm)' }}>
+              Spreads words and spy turns evenly, with enough randomness that the next pick cannot be predicted.
+            </p>
           </div>
           <div className={styles.row}>
             <Toggle

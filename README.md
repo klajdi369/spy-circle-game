@@ -89,6 +89,8 @@ All changes persist in localStorage.
 
 All word data is stored in your browser's `localStorage` under the key `spy-circle-word-library`. The data is versioned (currently v1) so future migrations are possible. Predefined categories are seeded on first launch from the built-in TypeScript data file. Custom categories have `isPredefined: false` and can be deleted.
 
+Fairness history — the remaining words in the current shuffle cycle and each player's spy-turn count — is stored under `spy-circle-round-history`. It survives restarts and is cleared by Settings → Reset All Data.
+
 ## How to Restore Default Words
 
 1. Open the Word Library
@@ -117,6 +119,7 @@ The installed app works fully offline after the first load.
 ## Settings
 
 - **Show category to spies** — when on, spies see the word's category
+- **Balance words and spy roles** — spreads words and spy turns evenly across sessions, with deliberate randomness so the next word or spy cannot be predicted
 - **Sound** — enable/disable sound effects
 - **Vibration** — enable/disable vibration on timer expiry
 - **Theme** — dark, light, or follow system preference

@@ -9,6 +9,7 @@ export interface AppSettings {
   preventScreenSleep: boolean;
   confirmBeforeLeaving: boolean;
   lastTimerDuration: number | null;
+  balanceRounds: boolean;
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -20,4 +21,5 @@ export const DEFAULT_SETTINGS: AppSettings = {
   preventScreenSleep: true,
   confirmBeforeLeaving: true,
   lastTimerDuration: 300,
+  balanceRounds: true,
 };

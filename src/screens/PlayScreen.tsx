@@ -10,9 +10,8 @@ import { Stepper } from '../components/shared/Stepper';
 import { Toggle } from '../components/shared/Toggle';
 import { validateSpyCount, clampSpyCount, hasUsableWords } from '../logic/validation';
 import { generateDefaultNames, preserveNames } from '../logic/playerNames';
-import { pickRandomIndices } from '../logic/random';
-import { pickRandomWord } from '../logic/wordSelection';
-import type { GameConfig, Player } from '../types/game';
+import { createRoundSetup } from '../logic/roundSetup';
+import type { GameConfig } from '../types/game';
 import styles from './PlayScreen.module.css';
 
 const TIMER_OPTIONS = [
@@ -96,40 +95,29 @@ export function PlayScreen() {
   const handleStartGame = useCallback(() => {
     setError(null);
 
-    // Select directly from a flat pool so every enabled word has equal odds,
-    // regardless of how many words its category contains.
-    const choice = pickRandomWord(enabledCategories);
-    if (!choice) {
+    const round = createRoundSetup({
+      categories: enabledCategories,
+      playerCount,
+      spyCount,
+      usePlayerNames,
+      playerNames,
+      balance: settings.balanceRounds,
+    });
+    if (!round) {
       setError('No categories with words available. Enable at least one category with words in the Word Library.');
       return;
     }
-    const { category: selectedCategory, word: secretWord } = choice;
-
-    // Select spies
-    const spyIndices = pickRandomIndices(playerCount, spyCount);
-
-    // Get names
-    const names = usePlayerNames
-      ? playerNames.map((n, i) => n.trim() || `Player ${i + 1}`)
-      : generateDefaultNames(playerCount);
-
-    // Create players
-    const players: Player[] = names.map((name, i) => ({
-      id: i,
-      name,
-      isSpy: spyIndices.includes(i),
-    }));
 
     const config: GameConfig = {
       playerCount,
       spyCount,
       timerDuration,
-      categoryId: selectedCategory.id,
+      categoryId: round.category.id,
       usePlayerNames,
-      playerNames: names,
+      playerNames: round.names,
     };
 
-    startGame(config, secretWord, selectedCategory.name, players);
+    startGame(config, round.word, round.category.name, round.players);
   }, [
     playerCount,
     spyCount,
@@ -137,6 +125,7 @@ export function PlayScreen() {
     usePlayerNames,
     playerNames,
     enabledCategories,
+    settings.balanceRounds,
     startGame,
   ]);
 

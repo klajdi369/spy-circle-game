@@ -4,10 +4,7 @@ import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
 import { useSettings } from '../../hooks/useSettings';
 import { useWordLibrary } from '../../hooks/useWordLibrary';
-import { pickRandomIndices } from '../../logic/random';
-import { pickRandomWord } from '../../logic/wordSelection';
-import { generateDefaultNames } from '../../logic/playerNames';
-import type { Player } from '../../types/game';
+import { createRoundSetup } from '../../logic/roundSetup';
 import styles from './ResultsScreen.module.css';
 
 function formatTimerDuration(seconds: number | null): string {
@@ -28,29 +25,23 @@ export function ResultsScreen() {
   );
 
   const handlePlayAgain = useCallback(() => {
-    const enabledCategories = library.categories.filter((c) => c.enabled && c.words.length > 0);
-    const choice = pickRandomWord(enabledCategories);
-    if (!choice) return;
-    const { category: selectedCategory, word: secretWord } = choice;
-
-    const spyIndices = pickRandomIndices(state.config.playerCount, state.config.spyCount);
-    const names = state.config.usePlayerNames
-      ? state.config.playerNames.map((n, i) => n.trim() || `Player ${i + 1}`)
-      : generateDefaultNames(state.config.playerCount);
-
-    const players: Player[] = names.map((name, i) => ({
-      id: i,
-      name,
-      isSpy: spyIndices.includes(i),
-    }));
+    const round = createRoundSetup({
+      categories: library.categories,
+      playerCount: state.config.playerCount,
+      spyCount: state.config.spyCount,
+      usePlayerNames: state.config.usePlayerNames,
+      playerNames: state.config.playerNames,
+      balance: settings.balanceRounds,
+    });
+    if (!round) return;
 
     playAgain(
-      { ...state.config, categoryId: selectedCategory.id },
-      secretWord,
-      selectedCategory.name,
-      players,
+      { ...state.config, categoryId: round.category.id, playerNames: round.names },
+      round.word,
+      round.category.name,
+      round.players,
     );
-  }, [state, library, playAgain]);
+  }, [state, library, settings.balanceRounds, playAgain]);
 
   return (
     <div className={styles.container}>
