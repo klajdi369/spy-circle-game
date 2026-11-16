@@ -8,7 +8,6 @@ import {
   ReadyScreen,
   RoleCardConcealed,
   RoleCardRevealed,
-  StartingPlayerScreen,
 } from '../../components/game/RoleCard';
 import type { GameConfig, Player } from '../../types/game';
 
@@ -76,8 +75,12 @@ function DiscussionHarness() {
     <div>
       <span data-testid="phase">{state.phase}</span>
       {state.phase === 'ready' && <ReadyScreen />}
-      {state.phase === 'starter' && <StartingPlayerScreen />}
-      {state.phase === 'discussion' && <span>Timer running</span>}
+      {state.phase === 'discussion' && (
+        <div>
+          <span>Timer running</span>
+          <span data-testid="starter">{state.players[state.startingPlayerIndex]?.name}</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -160,7 +163,7 @@ describe('RoleCard tap flow', () => {
 });
 
 describe('choosing the starting player', () => {
-  it('picks a player when discussion is requested, then waits to begin', async () => {
+  it('picks a player on the existing Start Discussion action', async () => {
     const user = userEvent.setup();
     render(
       <GameProvider>
@@ -174,14 +177,8 @@ describe('choosing the starting player', () => {
 
     await user.click(screen.getByRole('button', { name: 'Start Discussion' }));
 
-    expect(screen.getByTestId('phase')).toHaveTextContent('starter');
-    expect(screen.getByText('First to speak')).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /Player [12]/ })).toBeInTheDocument();
-    expect(screen.queryByText('Timer running')).not.toBeInTheDocument();
-
-    await user.click(screen.getByRole('button', { name: 'Begin Discussion' }));
-
     expect(screen.getByTestId('phase')).toHaveTextContent('discussion');
     expect(screen.getByText('Timer running')).toBeInTheDocument();
+    expect(screen.getByTestId('starter')).toHaveTextContent(/Player [12]/);
   });
 });

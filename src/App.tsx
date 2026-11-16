@@ -13,7 +13,6 @@ import {
   RoleCardConcealed,
   RoleCardRevealed,
   ReadyScreen,
-  StartingPlayerScreen,
 } from './components/game/RoleCard';
 import { DiscussionTimer } from './components/game/DiscussionTimer';
 import { ResultsScreen } from './components/game/ResultsScreen';
@@ -81,8 +80,6 @@ function GameFlow() {
       return <RoleCardRevealed />;
     case 'ready':
       return <ReadyScreen />;
-    case 'starter':
-      return <StartingPlayerScreen />;
     case 'discussion':
       return <DiscussionTimer />;
     case 'finished':

@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { Eye, EyeOff, Play } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
 import { useSettings } from '../../hooks/useSettings';
@@ -143,29 +143,6 @@ export function ReadyScreen() {
         onClick={handleStartDiscussion}
       >
         Start Discussion
-      </Button>
-    </div>
-  );
-}
-
-export function StartingPlayerScreen() {
-  const { state, dispatch } = useGame();
-  const starter = state.players[state.startingPlayerIndex];
-
-  return (
-    <div className={styles.container}>
-      <Play size={48} className={styles.starterIcon} />
-      <p className={styles.starterLabel}>First to speak</p>
-      <h2 className={styles.starterName}>{starter.name}</h2>
-      <p className={styles.starterHint}>
-        Ask the first question to get the discussion going.
-      </p>
-      <Button
-        variant="primary"
-        size="large"
-        onClick={() => dispatch({ type: 'BEGIN_DISCUSSION' })}
-      >
-        Begin Discussion
       </Button>
     </div>
   );

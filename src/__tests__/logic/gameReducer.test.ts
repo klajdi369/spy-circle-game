@@ -81,16 +81,13 @@ describe('gameReducer state machine', () => {
     expect(dispatch(state, { type: 'HIDE_ROLE' }).phase).toBe('handoff');
   });
 
-  it('picks a starter before discussion and only then starts the timer', () => {
-    let state = dispatch(startedState({ phase: 'ready' }), {
+  it('picks a starter when the discussion starts', () => {
+    const state = dispatch(startedState({ phase: 'ready' }), {
       type: 'START_DISCUSSION',
       startingPlayerIndex: 2,
     });
-    expect(state.phase).toBe('starter');
-    expect(state.startingPlayerIndex).toBe(2);
-
-    state = dispatch(state, { type: 'BEGIN_DISCUSSION' });
     expect(state.phase).toBe('discussion');
+    expect(state.startingPlayerIndex).toBe(2);
   });
 
   it('falls back to the first player for an invalid starter index', () => {
@@ -106,7 +103,6 @@ describe('gameReducer state machine', () => {
     expect(
       dispatch(state, { type: 'START_DISCUSSION', startingPlayerIndex: 1 }).phase,
     ).toBe('discussion');
-    expect(dispatch(state, { type: 'BEGIN_DISCUSSION' }).phase).toBe('discussion');
   });
 
   it('ends discussion and reveals results in order', () => {

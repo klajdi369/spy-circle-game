@@ -4,7 +4,6 @@ export type GamePhase =
   | 'concealed'
   | 'revealed'
   | 'ready'
-  | 'starter'
   | 'discussion'
   | 'finished'
   | 'results';
@@ -47,16 +46,14 @@ export type GameAction =
   | { type: 'PLAY_AGAIN'; config: GameConfig; secretWord: string; category: string; players: Player[] }
   | { type: 'NEW_SETUP' }
   | { type: 'RETURN_HOME' }
-  | { type: 'START_DISCUSSION'; startingPlayerIndex: number }
-  | { type: 'BEGIN_DISCUSSION' };
+  | { type: 'START_DISCUSSION'; startingPlayerIndex: number };
 
 export const VALID_TRANSITIONS: Record<GamePhase, GamePhase[]> = {
   setup: ['handoff'],
   handoff: ['concealed'],
   concealed: ['revealed'],
   revealed: ['handoff', 'ready'],
-  ready: ['starter'],
-  starter: ['discussion'],
+  ready: ['discussion'],
   discussion: ['finished'],
   finished: ['results'],
   results: ['handoff', 'setup'],

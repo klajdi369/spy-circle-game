@@ -82,18 +82,13 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'START_DISCUSSION': {
-      if (!isValidTransition(state.phase, 'starter')) return state;
+      if (!isValidTransition(state.phase, 'discussion')) return state;
       const index = action.startingPlayerIndex;
       const startingPlayerIndex =
         Number.isInteger(index) && index >= 0 && index < state.players.length
           ? index
           : 0;
-      return { ...state, phase: 'starter', startingPlayerIndex };
-    }
-
-    case 'BEGIN_DISCUSSION': {
-      if (!isValidTransition(state.phase, 'discussion')) return state;
-      return { ...state, phase: 'discussion' };
+      return { ...state, phase: 'discussion', startingPlayerIndex };
     }
 
     case 'END_DISCUSSION': {
