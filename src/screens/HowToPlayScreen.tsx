@@ -51,8 +51,9 @@ export function HowToPlayScreen() {
             <div>
               <div className={styles.stepTitle}>Ask questions</div>
               <div className={styles.stepDesc}>
-                After everyone has seen their role, start the timer. Ask each
-                other questions to figure out who the spies are — without
+                After everyone has seen their role, the app randomly picks a
+                player to ask the first question. Begin the discussion and take
+                turns asking questions to figure out who the spies are — without
                 saying the secret word directly.
               </div>
             </div>

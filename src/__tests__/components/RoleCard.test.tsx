@@ -1,10 +1,15 @@
 import { useEffect } from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GameProvider } from '../../hooks/gameProvider';
 import { useGame } from '../../hooks/useGame';
-import { RoleCardConcealed, RoleCardRevealed } from '../../components/game/RoleCard';
+import {
+  ReadyScreen,
+  RoleCardConcealed,
+  RoleCardRevealed,
+  StartingPlayerScreen,
+} from '../../components/game/RoleCard';
 import type { GameConfig, Player } from '../../types/game';
 
 const config: GameConfig = {
@@ -48,6 +53,32 @@ function renderHarness() {
     <GameProvider>
       <Harness />
     </GameProvider>,
+  );
+}
+
+/** Plays through both role cards automatically, then exposes the ready/starter flow. */
+function DiscussionHarness() {
+  const { state, dispatch } = useGame();
+
+  useEffect(() => {
+    if (state.phase === 'setup') {
+      dispatch({ type: 'START_GAME', config, secretWord: 'Dog', category: 'Animals', players });
+    } else if (state.phase === 'handoff') {
+      dispatch({ type: 'SHOW_HANDOFF' });
+    } else if (state.phase === 'concealed') {
+      dispatch({ type: 'REVEAL_ROLE' });
+    } else if (state.phase === 'revealed') {
+      dispatch({ type: 'HIDE_ROLE' });
+    }
+  }, [state.phase, dispatch]);
+
+  return (
+    <div>
+      <span data-testid="phase">{state.phase}</span>
+      {state.phase === 'ready' && <ReadyScreen />}
+      {state.phase === 'starter' && <StartingPlayerScreen />}
+      {state.phase === 'discussion' && <span>Timer running</span>}
+    </div>
   );
 }
 
@@ -125,5 +156,32 @@ describe('RoleCard tap flow', () => {
     } finally {
       nowSpy.mockRestore();
     }
+  });
+});
+
+describe('choosing the starting player', () => {
+  it('picks a player when discussion is requested, then waits to begin', async () => {
+    const user = userEvent.setup();
+    render(
+      <GameProvider>
+        <DiscussionHarness />
+      </GameProvider>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('phase')).toHaveTextContent('ready');
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Start Discussion' }));
+
+    expect(screen.getByTestId('phase')).toHaveTextContent('starter');
+    expect(screen.getByText('First to speak')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Player [12]/ })).toBeInTheDocument();
+    expect(screen.queryByText('Timer running')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Begin Discussion' }));
+
+    expect(screen.getByTestId('phase')).toHaveTextContent('discussion');
+    expect(screen.getByText('Timer running')).toBeInTheDocument();
   });
 });

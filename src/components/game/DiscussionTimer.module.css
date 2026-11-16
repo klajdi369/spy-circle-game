@@ -52,6 +52,11 @@
   border: 1px solid var(--color-border-light);
 }
 
+.starterTag {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
 .progressRing {
   position: relative;
   width: 200px;

@@ -9,7 +9,12 @@ import { GameProvider } from './hooks/gameProvider';
 import { useGame } from './hooks/useGame';
 import { useSettings, useThemeEffect } from './hooks/useSettings';
 import { HandoffScreen } from './components/game/HandoffScreen';
-import { RoleCardConcealed, RoleCardRevealed, ReadyScreen } from './components/game/RoleCard';
+import {
+  RoleCardConcealed,
+  RoleCardRevealed,
+  ReadyScreen,
+  StartingPlayerScreen,
+} from './components/game/RoleCard';
 import { DiscussionTimer } from './components/game/DiscussionTimer';
 import { ResultsScreen } from './components/game/ResultsScreen';
 import { InstallPromptModal } from './components/shared/InstallPromptModal';
@@ -76,6 +81,8 @@ function GameFlow() {
       return <RoleCardRevealed />;
     case 'ready':
       return <ReadyScreen />;
+    case 'starter':
+      return <StartingPlayerScreen />;
     case 'discussion':
       return <DiscussionTimer />;
     case 'finished':

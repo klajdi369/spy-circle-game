@@ -81,6 +81,34 @@ describe('gameReducer state machine', () => {
     expect(dispatch(state, { type: 'HIDE_ROLE' }).phase).toBe('handoff');
   });
 
+  it('picks a starter before discussion and only then starts the timer', () => {
+    let state = dispatch(startedState({ phase: 'ready' }), {
+      type: 'START_DISCUSSION',
+      startingPlayerIndex: 2,
+    });
+    expect(state.phase).toBe('starter');
+    expect(state.startingPlayerIndex).toBe(2);
+
+    state = dispatch(state, { type: 'BEGIN_DISCUSSION' });
+    expect(state.phase).toBe('discussion');
+  });
+
+  it('falls back to the first player for an invalid starter index', () => {
+    const state = dispatch(startedState({ phase: 'ready' }), {
+      type: 'START_DISCUSSION',
+      startingPlayerIndex: 99,
+    });
+    expect(state.startingPlayerIndex).toBe(0);
+  });
+
+  it('rejects starting the discussion outside the ready phase', () => {
+    const state = startedState({ phase: 'discussion' });
+    expect(
+      dispatch(state, { type: 'START_DISCUSSION', startingPlayerIndex: 1 }).phase,
+    ).toBe('discussion');
+    expect(dispatch(state, { type: 'BEGIN_DISCUSSION' }).phase).toBe('discussion');
+  });
+
   it('ends discussion and reveals results in order', () => {
     let state = startedState({ phase: 'discussion' });
     state = dispatch(state, { type: 'END_DISCUSSION' });
@@ -103,7 +131,7 @@ describe('gameReducer state machine', () => {
   });
 
   it('play again resets to handoff with fresh players', () => {
-    let state = startedState({ phase: 'results' });
+    let state = startedState({ phase: 'results', startingPlayerIndex: 2 });
     const players: Player[] = [
       { id: 0, name: 'Player 1', isSpy: false },
       { id: 1, name: 'Player 2', isSpy: true },
@@ -115,6 +143,7 @@ describe('gameReducer state machine', () => {
     });
     expect(state.phase).toBe('handoff');
     expect(state.currentPlayerIndex).toBe(0);
+    expect(state.startingPlayerIndex).toBe(0);
     expect(state.secretWord).toBe('Fish');
     expect(state.players[1].isSpy).toBe(true);
   });

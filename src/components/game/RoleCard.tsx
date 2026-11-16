@@ -1,8 +1,9 @@
 import { useCallback, useRef } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Play } from 'lucide-react';
 import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
 import { useSettings } from '../../hooks/useSettings';
+import { randomInt } from '../../logic/random';
 import styles from './RoleCard.module.css';
 
 /** Ignore a quick second tap right after the reveal so a double tap can't accidentally
@@ -117,7 +118,13 @@ export function RoleCardRevealed() {
 }
 
 export function ReadyScreen() {
-  const { dispatch } = useGame();
+  const { state, dispatch } = useGame();
+
+  const handleStartDiscussion = useCallback(() => {
+    if (state.players.length === 0) return;
+    const startingPlayerIndex = randomInt(0, state.players.length);
+    dispatch({ type: 'START_DISCUSSION', startingPlayerIndex });
+  }, [dispatch, state.players.length]);
 
   return (
     <div className={styles.container}>
@@ -133,9 +140,32 @@ export function ReadyScreen() {
       <Button
         variant="primary"
         size="large"
-        onClick={() => dispatch({ type: 'START_DISCUSSION' })}
+        onClick={handleStartDiscussion}
       >
         Start Discussion
+      </Button>
+    </div>
+  );
+}
+
+export function StartingPlayerScreen() {
+  const { state, dispatch } = useGame();
+  const starter = state.players[state.startingPlayerIndex];
+
+  return (
+    <div className={styles.container}>
+      <Play size={48} className={styles.starterIcon} />
+      <p className={styles.starterLabel}>First to speak</p>
+      <h2 className={styles.starterName}>{starter.name}</h2>
+      <p className={styles.starterHint}>
+        Ask the first question to get the discussion going.
+      </p>
+      <Button
+        variant="primary"
+        size="large"
+        onClick={() => dispatch({ type: 'BEGIN_DISCUSSION' })}
+      >
+        Begin Discussion
       </Button>
     </div>
   );

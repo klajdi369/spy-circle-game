@@ -8,6 +8,7 @@ export const initialState: GameState = {
   category: '',
   categoryId: '',
   currentPlayerIndex: 0,
+  startingPlayerIndex: 0,
   spyCount: 0,
   timerDuration: null,
   config: {
@@ -44,6 +45,7 @@ function startRound(state: GameState, round: RoundPayload): GameState {
     spyCount: round.config.spyCount,
     timerDuration: round.config.timerDuration,
     currentPlayerIndex: 0,
+    startingPlayerIndex: 0,
   };
 }
 
@@ -80,6 +82,16 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
     }
 
     case 'START_DISCUSSION': {
+      if (!isValidTransition(state.phase, 'starter')) return state;
+      const index = action.startingPlayerIndex;
+      const startingPlayerIndex =
+        Number.isInteger(index) && index >= 0 && index < state.players.length
+          ? index
+          : 0;
+      return { ...state, phase: 'starter', startingPlayerIndex };
+    }
+
+    case 'BEGIN_DISCUSSION': {
       if (!isValidTransition(state.phase, 'discussion')) return state;
       return { ...state, phase: 'discussion' };
     }

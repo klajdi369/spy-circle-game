@@ -22,6 +22,7 @@ export function DiscussionTimer() {
   } = useTimer(state.timerDuration);
 
   const hasNoTimer = state.timerDuration === null;
+  const starter = state.players[state.startingPlayerIndex];
   const vibratedRef = useRef(false);
   const endedRef = useRef(false);
 
@@ -88,6 +89,13 @@ export function DiscussionTimer() {
           <div className={styles.label}>
             {hasNoTimer ? 'Elapsed Time' : isPaused ? 'Paused' : 'Remaining'}
           </div>
+
+          {starter && (
+            <div className={`${styles.categoryTag} ${styles.starterTag}`}>
+              <Play size={14} />
+              {starter.name} starts
+            </div>
+          )}
 
           {settings.showCategoryToSpies && (
             <div className={styles.categoryTag}>
