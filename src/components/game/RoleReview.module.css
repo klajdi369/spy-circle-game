@@ -1,0 +1,72 @@
+.intro {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--space-md);
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  max-height: min(45dvh, 340px);
+  overflow-y: auto;
+  padding-right: var(--space-xs);
+}
+
+.playerButton {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: 12px var(--space-md);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  font-size: var(--text-base);
+  font-weight: 500;
+  text-align: left;
+  touch-action: manipulation;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.playerButton:hover {
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-light);
+}
+
+.playerButton:active {
+  transform: scale(0.98);
+}
+
+.chevron {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.revealArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* A more compact take on the setup role card so it fits inside the sheet. */
+.peekCard {
+  max-width: 300px;
+  min-height: 260px;
+  aspect-ratio: auto;
+  margin: 0 auto;
+  padding: var(--space-lg);
+}
+
+.privacyHint {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}

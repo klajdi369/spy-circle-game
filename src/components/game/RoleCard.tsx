@@ -4,6 +4,7 @@ import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
 import { useSettings } from '../../hooks/useSettings';
 import { randomInt } from '../../logic/random';
+import type { Player } from '../../types/game';
 import styles from './RoleCard.module.css';
 
 /** Ignore a quick second tap right after the reveal so a double tap can't accidentally
@@ -47,6 +48,55 @@ export function RoleCardConcealed() {
   );
 }
 
+interface RoleCardContentProps {
+  player: Player;
+  secretWord: string;
+  category: string;
+  showCategory: boolean;
+}
+
+/** The inside of a revealed role card, shared by the setup flow and the
+ *  in-discussion card review so both always show the same information. */
+export function RoleCardContent({
+  player,
+  secretWord,
+  category,
+  showCategory,
+}: RoleCardContentProps) {
+  if (player.isSpy) {
+    return (
+      <>
+        <div className={`${styles.roleLabel} ${styles.spyLabel}`}>
+          <EyeOff size={16} style={{ display: 'inline', marginRight: 4 }} />
+          You are a spy
+        </div>
+        <p className={styles.spyMessage}>Your mission</p>
+        <p className={styles.spyExplanation}>
+          You don&apos;t know the secret word. Listen carefully to the discussion
+          and try to blend in. If you discover the word, you can still win.
+          If you get caught, you may get one chance to guess the word.
+        </p>
+        {showCategory && (
+          <div className={styles.spyCategory}>
+            Category: {category}
+          </div>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className={styles.roleLabel}>Your Secret Word</div>
+      <div className={styles.secretWord}>{secretWord}</div>
+      <div className={styles.category}>{category}</div>
+      <p className={styles.reminder}>
+        Don&apos;t say this word directly! Give hints and ask questions.
+      </p>
+    </>
+  );
+}
+
 export function RoleCardRevealed() {
   const { state, dispatch } = useGame();
   const { settings } = useSettings();
@@ -79,34 +129,12 @@ export function RoleCardRevealed() {
         role="button"
         aria-label={ariaLabel}
       >
-        {player.isSpy ? (
-          <>
-            <div className={`${styles.roleLabel} ${styles.spyLabel}`}>
-              <EyeOff size={16} style={{ display: 'inline', marginRight: 4 }} />
-              You are a spy
-            </div>
-            <p className={styles.spyMessage}>Your mission</p>
-            <p className={styles.spyExplanation}>
-              You don&apos;t know the secret word. Listen carefully to the discussion
-              and try to blend in. If you discover the word, you can still win.
-              If you get caught, you may get one chance to guess the word.
-            </p>
-            {showCategory && (
-              <div className={styles.spyCategory}>
-                Category: {state.category}
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            <div className={styles.roleLabel}>Your Secret Word</div>
-            <div className={styles.secretWord}>{state.secretWord}</div>
-            <div className={styles.category}>{state.category}</div>
-            <p className={styles.reminder}>
-              Don&apos;t say this word directly! Give hints and ask questions.
-            </p>
-          </>
-        )}
+        <RoleCardContent
+          player={player}
+          secretWord={state.secretWord}
+          category={state.category}
+          showCategory={showCategory}
+        />
       </div>
 
       <p className={styles.cardHint}>

@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useRef } from 'react';
-import { Clock, Pause, Play, Plus, SkipForward } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Clock, Eye, Pause, Play, Plus, SkipForward } from 'lucide-react';
 import { Button } from '../shared/Button';
 import { useGame } from '../../hooks/useGame';
 import { useSettings } from '../../hooks/useSettings';
 import { useTimer } from '../../hooks/useTimer';
 import { formatTime } from '../../logic/timer';
+import { RoleReviewModal } from './RoleReview';
 import styles from './DiscussionTimer.module.css';
 
 export function DiscussionTimer() {
@@ -58,6 +59,22 @@ export function DiscussionTimer() {
   const circumference = 2 * Math.PI * 90;
 
   const isEnded = state.phase === 'finished';
+
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const wasPausedBeforeReviewRef = useRef(false);
+
+  // Pause the clock while a card is out so checking a word doesn't eat into
+  // discussion time. Resume only if the timer wasn't already paused manually.
+  const handleOpenReview = useCallback(() => {
+    wasPausedBeforeReviewRef.current = isPaused;
+    if (!isPaused) pause();
+    setReviewOpen(true);
+  }, [isPaused, pause]);
+
+  const handleCloseReview = useCallback(() => {
+    setReviewOpen(false);
+    if (!wasPausedBeforeReviewRef.current) resume();
+  }, [resume]);
 
   const handleEndEarly = useCallback(() => {
     dispatch({ type: 'END_DISCUSSION' });
@@ -121,6 +138,10 @@ export function DiscussionTimer() {
           )}
 
           <div className={styles.controls}>
+            <Button variant="secondary" onClick={handleOpenReview}>
+              <Eye size={18} />
+              Show My Card
+            </Button>
             {!hasNoTimer && (
               <Button
                 variant="secondary"
@@ -149,6 +170,15 @@ export function DiscussionTimer() {
           </div>
         </>
       )}
+
+      <RoleReviewModal
+        open={reviewOpen}
+        players={state.players}
+        secretWord={state.secretWord}
+        category={state.category}
+        showCategoryToSpies={settings.showCategoryToSpies}
+        onClose={handleCloseReview}
+      />
     </div>
   );
 }

@@ -54,7 +54,9 @@ export function HowToPlayScreen() {
                 After everyone has seen their role, the app randomly picks a
                 player to ask the first question. Begin the discussion and take
                 turns asking questions to figure out who the spies are — without
-                saying the secret word directly.
+                saying the secret word directly. Forgot the word? Tap
+                &ldquo;Show My Card&rdquo; and choose your name for a private
+                peek. The timer pauses while the card is open.
               </div>
             </div>
           </div>
